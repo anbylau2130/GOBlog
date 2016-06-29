@@ -1,7 +1,8 @@
 package lib
 
 type Singleton struct {
-	Structs []string
+	USERSESSION  string
+	THEMESESSION string
 }
 
 var instance *Singleton
@@ -9,7 +10,8 @@ var instance *Singleton
 func NewSingleton() *Singleton {
 	if instance == nil {
 		instance = &Singleton{
-			Structs: make([]string, 0, 0),
+			USERSESSION:  "CurrentUser",
+			THEMESESSION: "CurrentTheme",
 		}
 	}
 	return instance

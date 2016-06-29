@@ -132,11 +132,11 @@
     };
 
     usp.init = function () {
-        if (typeof (toastr) == 'object') {
-            toastr.options.positionClass = 'toast-top-center';
-            toastr.options.timeOut = '2000';
-            toastr.options.extendedTimeOut = '1000';
-        }
+        // if (typeof (toastr) == 'object') {
+        //     toastr.options.positionClass = 'toast-top-center';
+        //     toastr.options.timeOut = '2000';
+        //     toastr.options.extendedTimeOut = '1000';
+        // }
     };
 
     

@@ -1,29 +1,24 @@
 package controllers
 
 import "github.com/astaxie/beego"
-import "reflect"
-
-// StructInfo struct to save structInfo
-type StructInfo struct {
-	StructType reflect.Type
-	PkgName    string
-}
 
 // UspController 定义
 type UspController struct {
 	beego.Controller
+	Templatetype string //ui template type
 }
 
-// GetAllStruct 注册struct
-func GetAllStruct() []StructInfo {
-	return []StructInfo{
-		{
-			StructType: reflect.TypeOf(new(UspController)),
-			PkgName:    "Controller",
-		},
-		{
-			StructType: reflect.TypeOf(new(MainController)),
-			PkgName:    "Controller",
-		},
+//Rsp Json输出
+func (usp *UspController) Rsp(status bool, str string) {
+	usp.Data["json"] = &map[string]interface{}{"status": status, "info": str}
+	usp.ServeJSON()
+}
+
+// GetTemplatetype 获取模板类型
+func (usp *UspController) GetTemplatetype() string {
+	templatetype := beego.AppConfig.String("template_type")
+	if templatetype == "" {
+		templatetype = "metro"
 	}
+	return templatetype
 }
