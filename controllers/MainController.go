@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"beego"
 	"blog/lib"
 	"blog/models"
 
@@ -9,9 +10,8 @@ import (
 )
 
 const (
-	CurrentUserSession = "CURRENT_USER"
-	CurrentCorpSession = "CurrentCorpSession"
-
+	CurrentUserSession             = "CURRENT_USER"
+	CurrentCorpSession             = "CurrentCorpSession"
 	CurrentAccessMenusSession      = "CURRENT_ACCESS_MENUS"
 	CurrentAccessPrivilegesSession = "Current_ACCESS_PRIVILEGES_SESSION"
 )
@@ -28,10 +28,15 @@ type MainController struct {
 
 // Home page
 func (main *MainController) Home() {
+	userinfo := main.GetSession(CurrentUserSession)
+	if userinfo == nil {
+		main.Ctx.Redirect(302, beego.AppConfig.String("rbac_auth_gateway"))
+	}
+	main.GetSession(CurrentUserSession)
 	menuHorizontal := main.GetMenuHorizontal()
 	main.Data["menuHorizontal"] = menuHorizontal
-	main.Layout = "metro/shared/layout.tpl"
-	main.TplName = "metro/pages/home.tpl"
+	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
+	main.TplName = main.GetTemplatetype() + "/pages/home.tpl"
 }
 
 // Login page
@@ -40,20 +45,25 @@ func (main *MainController) Login() {
 	if isajax == "1" {
 		username := main.GetString("username")
 		password := main.GetString("password")
+		user, err := lib.CheckLogin(username, password) //读取operater
 
-		user, err := lib.CheckLogin(username, password)
 		if err == nil {
-			main.SetSession(CurrentUserSession, user)
+			userinfo := UserInfo{}
+			userinfo.Operator = user
+			userinfo.Menus, userinfo.Privileges = models.GetMenuByUser(user)
+			userinfo.Corp = models.GetCorpByUser(user)
+			main.SetSession(CurrentUserSession, userinfo)
 			//accesslist, _ := GetAccessList(user.Id)
 			//main.SetSession("CURRENT_MENULIST", accesslist)
+			//main.Ctx.Redirect(302, main.GetHostAddress()+"/Home")
 			main.Rsp(true, "登录成功")
 			return
 		}
 		main.Rsp(false, err.Error())
 	}
-	userinfo := main.GetSession("userinfo")
+	userinfo := main.GetSession(CurrentUserSession)
 	if userinfo != nil {
-		main.Ctx.Redirect(302, "/public/index")
+		main.Ctx.Redirect(302, main.GetHostAddress()+"/Home")
 	}
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
 	main.TplName = main.GetTemplatetype() + "/pages/login.tpl"

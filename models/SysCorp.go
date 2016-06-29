@@ -61,6 +61,15 @@ type SysCorp struct {
 	LogoUrl           string    `orm:"column(LogoUrl);size(0);default((''));"`
 }
 
+//TableName
 func (this *SysCorp) TableName() string {
 	return "SysCorp"
+}
+
+//GetCorpByUser
+func GetCorpByUser(User SysOperator) (corp SysCorp) {
+	corp = SysCorp{ID: User.Corp}
+	o := orm.NewOrm()
+	o.Read(&corp, "ID")
+	return corp
 }

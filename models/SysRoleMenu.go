@@ -31,3 +31,12 @@ type SysRoleMenu struct {
 func (this *SysRoleMenu) TableName() string {
 	return "SysRoleMenu"
 }
+
+//GetModelByRole 通过Role Id获取RoleMenu
+func (this *SysRoleMenu) GetModelByRole(role int64) []SysRoleMenu {
+	o := orm.NewOrm()
+	var rolemenus []SysRoleMenu
+	qt := o.QueryTable(this)
+	qt.Filter("Role", role).All(&rolemenus)
+	return rolemenus
+}

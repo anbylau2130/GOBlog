@@ -59,7 +59,6 @@ func (this *SysMenu) GetMenusVertical(id int64) []MenuNode {
 }
 func (this *SysMenu) GetMenu(parent int64, direction bool, pNode *MenuNode) []MenuNode {
 	o := orm.NewOrm()
-	o.Using("default")
 	sysmenu := new(SysMenu)
 	var menus []*SysMenu
 	qt := o.QueryTable(sysmenu)
@@ -78,4 +77,33 @@ func (this *SysMenu) GetMenu(parent int64, direction bool, pNode *MenuNode) []Me
 		menuNodes = append(menuNodes, *pNode)
 	}
 	return menuNodes
+}
+
+//GetMenuByUser 通过用户获取菜单
+func GetMenuByUser(user SysOperator) ([]SysMenu, []SysPrivilege) {
+	o := orm.NewOrm()
+
+	roleUserQt := o.QueryTable(new(SysRoleOperator))
+	roleMenuQt := o.QueryTable(new(SysRoleMenu))
+	rolePrivilegeQT := o.QueryTable(new(SysRolePrivilege))
+	menuQt := o.QueryTable(user)
+	privilegeQt := o.QueryTable(new(SysPrivilege))
+	var roleUserStore []SysRoleOperator
+	var menuStore []SysMenu
+	var roleMenuStore []SysRoleMenu
+	var rolePrivilegeStore []SysRolePrivilege
+	var privilegeStore []SysPrivilege
+	roleUserQt.Filter("Operator", user.ID).All(&roleUserStore)
+
+	for _, item := range roleUserStore {
+		roleMenuQt.Filter("Role", item.Role).Exclude("ID", 0).All(&roleMenuStore)
+		for _, roleMenu := range roleMenuStore {
+			menuQt.Filter("ID", roleMenu.Menu).Exclude("ID", 0).All(&menuStore)
+		}
+		rolePrivilegeQT.Filter("Role", item.Role).Exclude("ID", 0).All(&rolePrivilegeStore)
+		for _, rolePrivilege := range rolePrivilegeStore {
+			privilegeQt.Filter("ID", rolePrivilege.Privilege).Exclude("ID", 0).All(&privilegeStore)
+		}
+	}
+	return menuStore, privilegeStore
 }

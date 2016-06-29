@@ -46,7 +46,16 @@
             url: 'Login?isajax=1',
             data: $("form").serialize(),
             success: function(data) {
-                console.log(data)
+                // var data = $.parseJSON(data);
+                if(data.status){
+                    location.href = "/"
+                }else{
+                    $.Notify({
+                        caption: "登录失败",
+                        content: data.info,
+                        type:"alert"
+                    });
+                }
             }
         });
         return false;
@@ -77,6 +86,7 @@
                  data-validate-func="required,minlength"
                  data-validate-arg=",5"
                 data-validate-hint="不能为空 且 最少5个字符"
+                value="admin"
                 />
                 <button class="button helper-button clear"><span class="mif-cross"></span></button>
             </div>
@@ -89,7 +99,9 @@
                 data-validate-func="required,minlength"
                 data-validate-arg=",6"
                 data-validate-hint="不能为空 且 最少6个字符"
-                name="password" id="password" />
+                name="password" id="password" 
+                value="123456"
+                />
                  <span class="input-state-error mif-warning"></span>
                  <span class="input-state-success mif-checkmark"></span>
                 <button class="button helper-button reveal"><span class="mif-looks"></span></button>
