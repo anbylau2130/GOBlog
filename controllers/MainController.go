@@ -1,19 +1,16 @@
 package controllers
 
 import (
-	"beego"
 	"blog/lib"
 	"blog/models"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	CurrentUserSession             = "CURRENT_USER"
-	CurrentCorpSession             = "CurrentCorpSession"
-	CurrentAccessMenusSession      = "CURRENT_ACCESS_MENUS"
-	CurrentAccessPrivilegesSession = "Current_ACCESS_PRIVILEGES_SESSION"
+	CurrentUserSession = "CURRENT_USER"
 )
 
 func init() {
@@ -36,7 +33,7 @@ func (main *MainController) Home() {
 	menuHorizontal := main.GetMenuHorizontal()
 	main.Data["menuHorizontal"] = menuHorizontal
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
-	main.TplName = main.GetTemplatetype() + "/pages/home.tpl"
+	main.TplName = main.GetTemplatetype() + "/mainPages/home.tpl"
 }
 
 // Login page
@@ -48,14 +45,12 @@ func (main *MainController) Login() {
 		user, err := lib.CheckLogin(username, password) //读取operater
 
 		if err == nil {
-			userinfo := UserInfo{}
+			userinfo := new(UserInfo)
 			userinfo.Operator = user
-			userinfo.Menus, userinfo.Privileges = models.GetMenuByUser(user)
+			userinfo.Menus = models.GetMenusByUser(user)
+			userinfo.Privileges = models.GetPrivilegesByUser(user)
 			userinfo.Corp = models.GetCorpByUser(user)
 			main.SetSession(CurrentUserSession, userinfo)
-			//accesslist, _ := GetAccessList(user.Id)
-			//main.SetSession("CURRENT_MENULIST", accesslist)
-			//main.Ctx.Redirect(302, main.GetHostAddress()+"/Home")
 			main.Rsp(true, "登录成功")
 			return
 		}
@@ -63,10 +58,10 @@ func (main *MainController) Login() {
 	}
 	userinfo := main.GetSession(CurrentUserSession)
 	if userinfo != nil {
-		main.Ctx.Redirect(302, main.GetHostAddress()+"/Home")
+		main.Ctx.Redirect(302, main.GetHostAddress()+"main/Home")
 	}
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
-	main.TplName = main.GetTemplatetype() + "/pages/login.tpl"
+	main.TplName = main.GetTemplatetype() + "/mainPages/login.tpl"
 }
 
 //GetMenuHorizontal 水平菜单

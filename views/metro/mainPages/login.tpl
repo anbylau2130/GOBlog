@@ -48,7 +48,7 @@
             success: function(data) {
                 // var data = $.parseJSON(data);
                 if(data.status){
-                    location.href = "/"
+                    location.href = "/main"
                 }else{
                     $.Notify({
                         caption: "登录失败",

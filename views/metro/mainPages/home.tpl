@@ -71,7 +71,7 @@ body {
         function getMenuVertical(id){
             $.ajax({
                 type: "POST",
-                url: "GetMenusVertical",
+                url: "main/GetMenusVertical",
                 data:{ ID:id },
                 success: function(rsp){
                     if(rsp.success){

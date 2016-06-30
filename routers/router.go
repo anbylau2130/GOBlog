@@ -8,8 +8,11 @@ import (
 
 func init() {
 	beego.Router("/", &controllers.MainController{}, "*:Home")
-	beego.Router("/Home", &controllers.MainController{}, "*:Home")
 	beego.Router("/Login", &controllers.MainController{}, "*:Login")
-	beego.Router("/GetMenuHorizontal", &controllers.MainController{}, "*:GetMenuHorizontal")
-	beego.Router("/GetMenusVertical", &controllers.MainController{}, "*:GetMenusVertical")
+	beego.Router("/main", &controllers.MainController{}, "*:Home")
+	beego.Router("/main/Home", &controllers.MainController{}, "*:Home")
+	beego.Router("/main/Login", &controllers.MainController{}, "*:Login")
+	beego.Router("/main/GetMenuHorizontal", &controllers.MainController{}, "*:GetMenuHorizontal")
+	beego.Router("/main/GetMenusVertical", &controllers.MainController{}, "*:GetMenusVertical")
+	beego.AutoRouter(&controllers.ObjectController{})
 }

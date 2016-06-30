@@ -18,3 +18,29 @@ $ ./hello -syncdb
 好了，现在可以通过浏览器地址访问了http://localhost:8080/
 
 默认得用户名密码都是admin
+
+func (p *ControllerRegistor) AddAutoPrefix(prefix string, c ControllerInterface) {
+  reflectVal := reflect.ValueOf(c)
+  rt := reflectVal.Type()
+  ct := reflect.Indirect(reflectVal).Type()
+  controllerName := strings.TrimSuffix(ct.Name(), "Controller")
+  for i := 0; i < rt.NumMethod(); i++ {
+    if !utils.InSlice(rt.Method(i).Name, exceptMethod) {
+      route := &controllerInfo{}
+      route.routerType = routerTypeBeego
+      route.methods = map[string]string{"*": rt.Method(i).Name}
+      route.controllerType = ct
+      pattern := path.Join(prefix, strings.ToLower(controllerName), strings.ToLower(rt.Method(i).Name), "*")
+      patternInit := path.Join(prefix, controllerName, rt.Method(i).Name, "*")
+      patternfix := path.Join(prefix, strings.ToLower(controllerName), strings.ToLower(rt.Method(i).Name))
+      patternfixInit := path.Join(prefix, controllerName, rt.Method(i).Name)
+      route.pattern = pattern
+      for _, m := range HTTPMETHOD {
+        p.addToRouter(m, pattern, route)
+        p.addToRouter(m, patternInit, route)
+        p.addToRouter(m, patternfix, route)
+        p.addToRouter(m, patternfixInit, route)
+      }
+    }
+  }
+}

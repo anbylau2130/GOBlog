@@ -38,3 +38,17 @@ type SysPrivilege struct {
 func (this *SysPrivilege) TableName() string {
 	return "SysPrivilege"
 }
+
+// GetPrivilegesByUser
+func GetPrivilegesByUser(user SysOperator) []SysPrivilege {
+	o := orm.NewOrm()
+	var privilegesResult []SysPrivilege
+	o.Raw(` 
+			select * from sysroleoperator a
+			LEFT JOIN sysroleprivilege b on a.Role=b.Role
+			left JOIN sysprivilege c on b.Privilege=c.ID
+			where a.Operator=? 
+	   `, user.ID).QueryRows(&privilegesResult)
+
+	return privilegesResult
+}
