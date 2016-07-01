@@ -3,7 +3,8 @@ package routers
 import (
 	"blog/controllers"
 	"blog/controllers/admin"
-	"errors"
+	"blog/models"
+	"encoding/json"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -14,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/utils"
 )
 
@@ -92,46 +94,81 @@ func parserPkg(pkgRealpath, pkgpath string) error {
 }
 
 func parserComments(comments *ast.CommentGroup, funcName, controllerName, pkgpath string) error {
-	var genInfoList map[string][]beego.ControllerComments
 	if comments != nil && comments.List != nil {
 		for _, c := range comments.List {
 
 			t := strings.TrimSpace(strings.TrimLeft(c.Text, "//")) //@Menu name:菜单管理
-			if strings.HasPrefix(t, "@Menu") {
-				elements := strings.TrimLeft(t, "@MenuH ") //name:菜单管理;parent:0
-				e1 := strings.SplitN(elements, ";", 2)
-				if len(e1) < 1 {
-					return errors.New("你需要设置菜单信息")
-				}
-				var menuComment map[string]string
-				for _, item := range e1 {
-					if strings.HasPrefix(item, "name") {
-						menuComment["name"] = strings.TrimLeft(item, "name:")
-					}
-					if strings.HasPrefix(item, "parent") {
-						menuComment["parent"] = strings.TrimLeft(item, "parent:")
-					}
-					if strings.HasPrefix(item, "icon") {
-						menuComment["icon"] = strings.TrimLeft(item, "icon:")
+			if menuH, error := parserPower(t, "@MenuH "); error == nil {
+				menu := new(models.SysMenu)
+
+				menu.Name = menuH["name"]
+				menu.Icon = menuH["icon"]
+				o := orm.NewOrm()
+				pmenu := models.SysMenu{Name: menuH["parent"]}
+				if menuH["parent"] != "0" {
+					if error := o.Read(&pmenu, "Name"); error == nil {
+						menu.Parent = pmenu.ID
 					}
 				}
-				key := pkgpath + "/" + controllerName
-				// o := orm.NewOrm()
-				// menunew(models.SysMenu)
-				// o.Raw("select *　from SysMenu where Name ='?' ", menuComment["parent"]).QueryRow(&)
-
-				// menu := models.SysMenu{
-				// 	Name: menuComment["name"],
-				// 	Icon: menuComment["icon"],
-				// 	URL:  strings.TrimRight(strings.TrimLeft(key, controllers.ControllerPath), "controllers"),
-				// }
-
-				//路由地址 blog/controllers/admin/MenusController
-
-				cc := beego.ControllerComments{}
-				genInfoList[key] = append(genInfoList[key], cc)
+				o.Insert(&menu)
 			}
+			if menuV, error := parserPower(t, "@MenuV "); error == nil {
+				menu := new(models.SysMenu)
+				menu.Name = menuV["name"]
+				menu.Icon = menuV["icon"]
+				pmenu := new(models.SysMenu)
+				o := orm.NewOrm()
+				qt := o.QueryTable(&pmenu)
+
+				if menuV["parent"] != "" {
+					if error := qt.Filter("Name", menuV["parent"]).One(&pmenu, "ID"); error == nil {
+						menu.Parent = pmenu.ID
+					}
+				}
+				o.Insert(&menu)
+			}
+			if privilege, error := parserPower(t, "@Privilege "); error == nil {
+				plg := new(models.SysPrivilege)
+				plg.Name = privilege["name"]
+				menu := new(models.SysMenu)
+				o := orm.NewOrm()
+				qt := o.QueryTable(&menu)
+				if privilege["parent"] != "" {
+					if error := qt.Filter("Name", privilege["parent"]).One(&menu, "ID"); error == nil {
+						plg.Menu = menu.ID
+					}
+				}
+				o.Insert(&plg)
+			}
+			// 	//路由地址 blog/controllers/admin/MenusController
+			// 	//key := pkgpath + "/" + controllerName
 		}
 	}
 	return nil
+}
+
+//comment:@MenuH {name:"菜单管理";parent:"0"}
+//commentType:"@MenuH"
+func parserPower(comment string, commentType string) (commentJSON map[string]string, err error) {
+	commentJSON = make(map[string]string)
+	if strings.HasPrefix(comment, commentType) {
+		elements := strings.TrimLeft(comment, commentType) //{name:"菜单管理";parent:"0"}
+		temp := []byte(elements)
+		if error := json.Unmarshal(temp, &commentJSON); error == nil {
+			commentJSON["name"] = getMapValueByKey(commentJSON, "name")
+			commentJSON["parent"] = getMapValueByKey(commentJSON, "parent")
+			commentJSON["icon"] = getMapValueByKey(commentJSON, "icon")
+		} else {
+			return nil, error
+		}
+
+	}
+	return commentJSON, nil
+}
+
+func getMapValueByKey(m map[string]string, key string) string {
+	if value, ok := m[key]; ok {
+		return value
+	}
+	return ""
 }
