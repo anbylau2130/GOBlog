@@ -2,6 +2,7 @@ package routers
 
 import (
 	"blog/controllers"
+	"blog/controllers/admin"
 	"errors"
 	"fmt"
 	"go/ast"
@@ -17,7 +18,8 @@ import (
 )
 
 func init() {
-	RegisterMenus(&controllers.MainController{})
+
+	RegisterMenus(&admin.MenusController{})
 	beego.Router("/", &controllers.MainController{}, "*:Home")
 	beego.Router("/Login", &controllers.MainController{}, "*:Login")
 	beego.Router("/main", &controllers.MainController{}, "*:Home")
@@ -25,9 +27,10 @@ func init() {
 	beego.Router("/main/Login", &controllers.MainController{}, "*:Login")
 	beego.Router("/main/GetMenuHorizontal", &controllers.MainController{}, "*:GetMenuHorizontal")
 	beego.Router("/main/GetMenusVertical", &controllers.MainController{}, "*:GetMenusVertical")
-	beego.Include(&controllers.MainController{})
+	beego.AutoPrefix("/Admin", &admin.MenusController{})
+	//beego.Include(&controllers.MainController{})
 	//beego.AutoPrefix("/Admin",&controllers.AdminController{})
-	//beego.AutoRouter(&controllers.AdminController{})
+
 }
 
 func RegisterMenus(cList ...beego.ControllerInterface) {
@@ -92,34 +95,40 @@ func parserComments(comments *ast.CommentGroup, funcName, controllerName, pkgpat
 	var genInfoList map[string][]beego.ControllerComments
 	if comments != nil && comments.List != nil {
 		for _, c := range comments.List {
-			t := strings.TrimSpace(strings.TrimLeft(c.Text, "//"))
-			if strings.HasPrefix(t, "@router") {
-				elements := strings.TrimLeft(t, "@router ")
-				e1 := strings.SplitN(elements, " ", 2)
+
+			t := strings.TrimSpace(strings.TrimLeft(c.Text, "//")) //@Menu name:菜单管理
+			if strings.HasPrefix(t, "@Menu") {
+				elements := strings.TrimLeft(t, "@MenuH ") //name:菜单管理;parent:0
+				e1 := strings.SplitN(elements, ";", 2)
 				if len(e1) < 1 {
-					return errors.New("you should has router infomation")
+					return errors.New("你需要设置菜单信息")
 				}
-				key := pkgpath + ":" + controllerName
+				var menuComment map[string]string
+				for _, item := range e1 {
+					if strings.HasPrefix(item, "name") {
+						menuComment["name"] = strings.TrimLeft(item, "name:")
+					}
+					if strings.HasPrefix(item, "parent") {
+						menuComment["parent"] = strings.TrimLeft(item, "parent:")
+					}
+					if strings.HasPrefix(item, "icon") {
+						menuComment["icon"] = strings.TrimLeft(item, "icon:")
+					}
+				}
+				key := pkgpath + "/" + controllerName
+				// o := orm.NewOrm()
+				// menunew(models.SysMenu)
+				// o.Raw("select *　from SysMenu where Name ='?' ", menuComment["parent"]).QueryRow(&)
+
+				// menu := models.SysMenu{
+				// 	Name: menuComment["name"],
+				// 	Icon: menuComment["icon"],
+				// 	URL:  strings.TrimRight(strings.TrimLeft(key, controllers.ControllerPath), "controllers"),
+				// }
+
+				//路由地址 blog/controllers/admin/MenusController
+
 				cc := beego.ControllerComments{}
-				cc.Method = funcName
-				cc.Router = e1[0]
-				if len(e1) == 2 && e1[1] != "" {
-					e1 = strings.SplitN(e1[1], " ", 2)
-					if len(e1) >= 1 {
-						cc.AllowHTTPMethods = strings.Split(strings.Trim(e1[0], "[]"), ",")
-					} else {
-						cc.AllowHTTPMethods = append(cc.AllowHTTPMethods, "get")
-					}
-				} else {
-					cc.AllowHTTPMethods = append(cc.AllowHTTPMethods, "get")
-				}
-				if len(e1) == 2 && e1[1] != "" {
-					keyval := strings.Split(strings.Trim(e1[1], "[]"), " ")
-					for _, kv := range keyval {
-						kk := strings.Split(kv, ":")
-						cc.Params = append(cc.Params, map[string]string{strings.Join(kk[:len(kk)-1], ":"): kk[len(kk)-1]})
-					}
-				}
 				genInfoList[key] = append(genInfoList[key], cc)
 			}
 		}

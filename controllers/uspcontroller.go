@@ -10,6 +10,11 @@ import (
 	"github.com/astaxie/beego/context"
 )
 
+const (
+	CurrentUserSession = "CURRENT_USER"
+	ControllerPath     = "blog/controllers/"
+)
+
 type UserInfo struct {
 	Operator   models.SysOperator
 	Corp       models.SysCorp
@@ -20,8 +25,6 @@ type UserInfo struct {
 // UspController 定义
 type UspController struct {
 	beego.Controller
-	Templatetype string //ui template type
-	HostAddress  string //当前主机地址
 }
 
 func init() {
@@ -67,26 +70,27 @@ func AccessRegister() {
 			params := strings.Split(strings.ToLower(ctx.Request.RequestURI), "/")
 			//area,controller,action
 			if CheckAccess(params) {
-				uinfo := ctx.Input.Session(CurrentUserSession).(UserInfo)
-				if &uinfo == nil {
+				uinfo := ctx.Input.Session(CurrentUserSession)
+
+				if uinfo == nil {
 					ctx.Redirect(302, rbac_auth_gateway)
 				}
 				//admin用户不用认证权限
 				adminuser := beego.AppConfig.String("rbac_admin_user")
-				if uinfo.Operator.LoginName == adminuser {
+				userinfo := uinfo.(*UserInfo)
+				if userinfo.Operator.LoginName == adminuser {
 					return
 				}
 
 				if user_auth_type == 1 {
-					if uinfo.Menus == nil || uinfo.Privileges == nil {
+					if userinfo.Menus == nil || userinfo.Privileges == nil {
 						ctx.Redirect(302, rbac_auth_gateway)
 					}
 				} else if user_auth_type == 2 {
-
-					uinfo.Menus, uinfo.Privileges = GetAccessList(uinfo.Operator)
+					userinfo.Menus, userinfo.Privileges = GetAccessList(userinfo.Operator)
 				}
 
-				ret := AccessDecision(params, uinfo)
+				ret := AccessDecision(params, *userinfo)
 				if !ret {
 					ctx.Output.JSON(&map[string]interface{}{"status": false, "info": "权限不足"}, true, false)
 				}

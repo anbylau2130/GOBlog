@@ -9,10 +9,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const (
-	CurrentUserSession = "CURRENT_USER"
-)
-
 func init() {
 	orm.RegisterDriver("mysql", orm.DRMySQL)
 	orm.RegisterDataBase("default", "mysql", "root:toor@tcp(127.0.0.1:3306)/usp?charset=utf8")
@@ -29,7 +25,7 @@ func (main *MainController) Home() {
 	if userinfo == nil {
 		main.Ctx.Redirect(302, beego.AppConfig.String("rbac_auth_gateway"))
 	}
-	main.GetSession(CurrentUserSession)
+
 	menuHorizontal := main.GetMenuHorizontal()
 	main.Data["menuHorizontal"] = menuHorizontal
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
