@@ -25,7 +25,7 @@ type MenuNode struct {
 	ChildrenNode []MenuNode
 }
 type SysMenu struct {
-	ID         int64     `orm:"column(ID);pk;unique;default();index;"`
+	ID         int64     `orm:"column(ID);pk;auto;unique;default();index;"`
 	Direction  bool      `orm:"column(Direction);not null;default();"`
 	Parent     int64     `orm:"column(Parent);default();"`
 	Name       string    `orm:"column(Name);size(0);default((''));"`
@@ -48,6 +48,11 @@ type SysMenu struct {
 
 func (this *SysMenu) TableName() string {
 	return "SysMenu"
+}
+func (this *SysMenu) ReadByName() *SysMenu {
+	o := orm.NewOrm()
+	o.Read(&this, "Name")
+	return this
 }
 func (this *SysMenu) GetMenuHorizontal(id int64) []MenuNode {
 	pNode := new(MenuNode)

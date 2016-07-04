@@ -3,6 +3,7 @@ package controllers
 import (
 	"blog/lib"
 	"blog/models"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
@@ -25,9 +26,10 @@ func (main *MainController) Home() {
 	if userinfo == nil {
 		main.Ctx.Redirect(302, beego.AppConfig.String("rbac_auth_gateway"))
 	}
-
 	menuHorizontal := main.GetMenuHorizontal()
 	main.Data["menuHorizontal"] = menuHorizontal
+	main.Data["CorpName"] = userinfo.(*UserInfo).Corp.Name
+	main.Data["UserName"] = userinfo.(*UserInfo).Operator.RealName
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
 	main.TplName = main.GetTemplatetype() + "/mainPages/home.tpl"
 }
@@ -47,9 +49,17 @@ func (main *MainController) Login() {
 			userinfo.Privileges = models.GetPrivilegesByUser(user)
 			userinfo.Corp = models.GetCorpByUser(user)
 			main.SetSession(CurrentUserSession, userinfo)
+			logmodel := new(models.SysLoginLog)
+			logmodel.Ip = main.GetClientIp()
+			logmodel.LoginAgent = main.Ctx.Input.UserAgent()
+			logmodel.Success = true
+			logmodel.Time = time.Now()
+			logmodel.Operator = userinfo.Operator.ID
+			logmodel.Add()
 			main.Rsp(true, "登录成功")
 			return
 		}
+
 		main.Rsp(false, err.Error())
 	}
 	userinfo := main.GetSession(CurrentUserSession)
@@ -58,6 +68,12 @@ func (main *MainController) Login() {
 	}
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
 	main.TplName = main.GetTemplatetype() + "/mainPages/login.tpl"
+}
+
+func (main *MainController) Logout() {
+	main.DestroySession()
+	main.Data["json"] = &map[string]interface{}{"success": true, "data": "/Login"}
+	main.ServeJSON()
 }
 
 //GetMenuHorizontal 水平菜单

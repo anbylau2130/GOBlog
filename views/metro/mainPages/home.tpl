@@ -13,7 +13,7 @@ body {
 </style>
 
 <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a class="app-bar-element branding">BrandName</a>
+        <a class="app-bar-element branding">{{.CorpName}}</a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
                 {{range  .menuHorizontal}}
@@ -31,13 +31,13 @@ body {
         </ul>
 
         <div class="app-bar-element place-right">
-            <span class="dropdown-toggle"><span class="mif-cog"></span> User Name</span>
+            <span class="dropdown-toggle"><span class="mif-cog"></span> {{.UserName}}</span>
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <h2 class="text-light">Quick settings</h2>
                 <ul class="unstyled-list fg-dark">
                     <li><a href="" class="fg-white1 fg-hover-yellow">Profile</a></li>
                     <li><a href="" class="fg-white2 fg-hover-yellow">Security</a></li>
-                    <li><a href="" class="fg-white3 fg-hover-yellow">Exit</a></li>
+                    <li><a id="exit" href="javascript:Logout()" class="fg-white3 fg-hover-yellow">Exit</a></li>
                 </ul>
             </div>
         </div>
@@ -61,8 +61,21 @@ body {
 
     <script>
         $(function(){
-           
+          
         })
+
+         function Logout(){
+                 $.ajax({
+                    type: "POST",
+                    url: "/Logout",
+                    success: function(rsp){
+                       if(rsp.success){
+                          window.location.href=rsp.data
+                       }
+                    }
+                })
+            }
+          
         function openIframe(url){
             $("#iframe").attr("src",url)
             $("#iframe").attr("height",$("#cell-content").height())

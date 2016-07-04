@@ -15,7 +15,7 @@ func init() {
 }
 
 type SysPrivilege struct {
-	ID         int64     `orm:"column(ID);pk;unique;default();index;"`
+	ID         int64     `orm:"column(ID);pk;auto;unique;default();index;"`
 	Parent     int64     `orm:"column(Parent);default();"`
 	Menu       int64     `orm:"column(Menu);default();"`
 	Name       string    `orm:"column(Name);size(0);default((''));"`

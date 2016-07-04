@@ -12,7 +12,6 @@ import (
 
 const (
 	CurrentUserSession = "CURRENT_USER"
-	ControllerPath     = "blog/controllers/"
 )
 
 type UserInfo struct {
@@ -59,6 +58,11 @@ func (usp *UspController) GetHostAddress() string {
 		port = "8080"
 	}
 	return hostaddress + ":" + port
+}
+
+//GetClientIp 获取客户端IP地址
+func (usp *UspController) GetClientIp() string {
+	return usp.Ctx.Input.IP()
 }
 
 func AccessRegister() {
