@@ -11,18 +11,26 @@
                      </div>
                  </div>
                  <div class="cell colspan3">
-                     <div class="cell colspan3 padding20 no-padding-top no-padding-bottom">
-                               <div class="row cell">
-                                   <div calss="cell">登录名：</div>
-                                   <div class="cell">{{.LoginName}}</div>
-                                </div>
-                               <div class="row cell">
-                                   <div calss="cell">姓&nbsp;&nbsp;名：</div>
-                                   <div class="cell">{{.RealName}}</div>
-                                </div>
-                     </div>
-                 </div>
-                 
+                 <table class="table">
+                    <thead>
+                        <tr>
+                            <td><h3>用户信息</h3></td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="align-left">登录名：</td>
+                            <td>{{.LoginName}}</td>
+                        </tr>
+                        <tr>
+                            <td class="align-left">姓名：</td>
+                            <td>{{.RealName}}</td>
+                        </tr>
+                       
+                    </tbody>
+                </table>
+              </div>
             </div>
         </div>
     </div>
