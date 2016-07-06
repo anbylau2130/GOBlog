@@ -7,10 +7,6 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func init() {
-
-}
-
 // MenusController  controller
 type MenusController struct {
 	controllers.UspController
@@ -21,7 +17,7 @@ type MenusController struct {
 //@MenuV {"name":"菜单列表","parent":"菜单管理"}
 func (menus *MenusController) List() {
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
-	menus.TplName = menus.GetTemplatetype() + "/adminPages/Menus.tpl"
+	menus.TplName = menus.GetTemplatetype() + "/adminPages/menus.tpl"
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}
@@ -29,7 +25,7 @@ func (menus *MenusController) List() {
 //@MenuV {"name":"菜单明细","parent":"菜单管理"}
 func (menus *MenusController) Detail() {
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
-	menus.TplName = menus.GetTemplatetype() + "/adminPages/MenuDetail.tpl"
+	menus.TplName = menus.GetTemplatetype() + "/adminPages/menuDetail.tpl"
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}
@@ -37,7 +33,7 @@ func (menus *MenusController) Detail() {
 //@MenuV {"name":"菜单编辑","parent":"菜单管理"}
 func (menus *MenusController) Edit() {
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
-	menus.TplName = menus.GetTemplatetype() + "/adminPages/MenuDetail.tpl"
+	menus.TplName = menus.GetTemplatetype() + "/adminPages/menuDetail.tpl"
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}

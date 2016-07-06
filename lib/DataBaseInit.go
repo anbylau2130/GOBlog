@@ -12,6 +12,22 @@ import (
 
 var o orm.Ormer
 
+func init() {
+
+	db_type := beego.AppConfig.String("db_type")
+	db_host := beego.AppConfig.String("db_host")
+	db_port := beego.AppConfig.String("db_port")
+	db_user := beego.AppConfig.String("db_user")
+	db_pass := beego.AppConfig.String("db_pass")
+	db_name := beego.AppConfig.String("db_name")
+
+	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", db_user, db_pass, db_host, db_port, db_name)
+	orm.RegisterDriver("mysql", orm.DRMySQL)
+	//orm.RegisterDataBase("default", "mysql", "root:toor@tcp(127.0.0.1:3306)/usp?charset=utf8")
+	orm.RegisterDataBase("default", db_type, dns)
+
+}
+
 func Syncdb() {
 	Createdb()
 	Connect()
@@ -28,7 +44,7 @@ func Syncdb() {
 		fmt.Println(err)
 	}
 	fmt.Println("database init is complete.\nPlease restart the application")
-
+	initDbData()
 }
 
 //创建数据库
@@ -110,4 +126,12 @@ func Connect() {
 		beego.Critical("Database driver is not allowed:", db_type)
 	}
 	orm.RegisterDataBase("default", db_type, dns)
+}
+
+func initDbData() {
+	o := orm.NewOrm()
+	result, error := o.Raw(`
+
+	`).Exec()
+	fmt.Println(result, error)
 }

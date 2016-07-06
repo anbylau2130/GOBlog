@@ -81,22 +81,24 @@ func AccessRegister() {
 				}
 				//admin用户不用认证权限
 				adminuser := beego.AppConfig.String("rbac_admin_user")
-				userinfo := uinfo.(*UserInfo)
-				if userinfo.Operator.LoginName == adminuser {
-					return
-				}
-
-				if user_auth_type == 1 {
-					if userinfo.Menus == nil || userinfo.Privileges == nil {
-						ctx.Redirect(302, rbac_auth_gateway)
+				userinfo, ok := uinfo.(*UserInfo)
+				if ok {
+					if userinfo.Operator.LoginName == adminuser {
+						return
 					}
-				} else if user_auth_type == 2 {
-					userinfo.Menus, userinfo.Privileges = GetAccessList(userinfo.Operator)
-				}
 
-				ret := AccessDecision(params, *userinfo)
-				if !ret {
-					ctx.Output.JSON(&map[string]interface{}{"status": false, "info": "权限不足"}, true, false)
+					if user_auth_type == 1 {
+						if userinfo.Menus == nil || userinfo.Privileges == nil {
+							ctx.Redirect(302, rbac_auth_gateway)
+						}
+					} else if user_auth_type == 2 {
+						userinfo.Menus, userinfo.Privileges = GetAccessList(userinfo.Operator)
+					}
+
+					ret := AccessDecision(params, *userinfo)
+					if !ret {
+						ctx.Output.JSON(&map[string]interface{}{"status": false, "info": "权限不足"}, true, false)
+					}
 				}
 			}
 		}

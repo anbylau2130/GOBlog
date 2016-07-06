@@ -17,14 +17,14 @@ func init() {
 }
 
 type SysLoginLog struct {
-	ID         int64     `orm:"column(ID);pk;unique;default();index;"`
-	Operator   int64     `orm:"column(Operator);default();"`
-	Ip         string    `orm:"column(Ip);size(0);default((''));"`
-	LoginAgent string    `orm:"column(LoginAgent);not null;size(0);default();"`
-	Success    bool      `orm:"column(Success);default(((0)));"`
-	Time       time.Time `orm:"column(Time);auto_now_add;type(datetime);default();"`
-	Reserve    string    `orm:"column(Reserve);not null;size(0);default();"`
-	Remark     string    `orm:"column(Remark);not null;size(0);default();"`
+	ID         int64     `orm:"column(ID);pk;unique;index;auto;"`
+	Operator   int64     `orm:"column(Operator);"`
+	Ip         string    `orm:"column(Ip);size(40);"`
+	LoginAgent string    `orm:"column(LoginAgent);not null;size(250);"`
+	Success    bool      `orm:"column(Success);"`
+	Time       time.Time `orm:"column(Time);auto_now_add;type(datetime);"`
+	Reserve    string    `orm:"column(Reserve);null;size(50);"`
+	Remark     string    `orm:"column(Remark);null;size(250);"`
 }
 
 func (this *SysLoginLog) TableName() string {

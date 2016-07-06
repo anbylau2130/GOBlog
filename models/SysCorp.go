@@ -4,9 +4,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/validation"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -15,55 +17,131 @@ func init() {
 }
 
 type SysCorp struct {
-	ID                int64     `orm:"column(ID);pk;unique;default();index;"`
-	Parent            int64     `orm:"column(Parent);default();"`
-	Priority          byte      `orm:"column(Priority);default();"`
-	Name              string    `orm:"column(Name);size(0);default((''));"`
-	BriefName         string    `orm:"column(BriefName);size(0);default((''));"`
-	Certificate       string    `orm:"column(Certificate);size(0);default((''));"`
-	CertificateNumber string    `orm:"column(CertificateNumber);size(0);default((''));"`
-	Ceo               string    `orm:"column(Ceo);size(0);default((''));"`
-	Postcode          string    `orm:"column(Postcode);size(0);default((''));"`
-	Faxcode           string    `orm:"column(Faxcode);size(0);default((''));"`
-	Linkman           string    `orm:"column(Linkman);size(0);default((''));"`
-	Mobile            string    `orm:"column(Mobile);size(0);default((''));"`
-	Email             string    `orm:"column(Email);size(0);default((''));"`
-	Qq                string    `orm:"column(Qq);size(0);default((''));"`
-	Wechat            string    `orm:"column(Wechat);size(0);default((''));"`
-	Weibo             string    `orm:"column(Weibo);size(0);default((''));"`
-	VirtualIntegral   int64     `orm:"column(VirtualIntegral);default(((0)));"`
-	RealIntegral      int64     `orm:"column(RealIntegral);default(((0)));"`
-	FeeType           int64     `orm:"column(FeeType);default();"`
-	PrepayValve       float64   `orm:"column(PrepayValve);digits(13);decimals(20);default(((0)));"`
-	Balance           float64   `orm:"column(Balance);digits(13);decimals(20);default(((0)));"`
-	FrozenBalance     float64   `orm:"column(FrozenBalance);digits(13);decimals(20);default(((0)));"`
-	IncomingBalance   float64   `orm:"column(IncomingBalance);digits(13);decimals(20);default(((0)));"`
-	Commission        float64   `orm:"column(Commission);digits(13);decimals(20);default(((0)));"`
-	Discount          float64   `orm:"column(Discount);digits(13);decimals(20);default(((1)));"`
-	Province          string    `orm:"column(Province);size(0);default();"`
-	Area              string    `orm:"column(Area);size(0);default();"`
-	County            string    `orm:"column(County);size(0);default();"`
-	Community         string    `orm:"column(Community);size(0);default();"`
-	Address           string    `orm:"column(Address);size(0);default((''));"`
-	Status            int64     `orm:"column(Status);default();"`
-	Type              int64     `orm:"column(Type);default();"`
-	Grade             int64     `orm:"column(Grade);default();"`
-	Vocation          int64     `orm:"column(Vocation);default();"`
-	Reserve           string    `orm:"column(Reserve);not null;size(0);default();"`
-	Remark            string    `orm:"column(Remark);not null;size(0);default();"`
-	Creator           int64     `orm:"column(Creator);default();"`
-	CreateTime        time.Time `orm:"column(CreateTime);auto_now_add;type(datetime);default((getdate()));"`
-	Auditor           int64     `orm:"column(Auditor);not null;default();"`
-	AuditTime         time.Time `orm:"column(AuditTime);not null;auto_now_add;type(datetime);default();"`
-	Canceler          int64     `orm:"column(Canceler);not null;default();"`
-	CancelTime        time.Time `orm:"column(CancelTime);not null;auto_now_add;type(datetime);default();"`
-	LogoIcon          string    `orm:"column(LogoIcon);size(0);default((''));"`
-	LogoUrl           string    `orm:"column(LogoUrl);size(0);default((''));"`
+	ID                int64     `orm:"column(ID);pk;unique;index;auto;"`
+	Parent            int64     `orm:"column(Parent);"`
+	Priority          byte      `orm:"column(Priority);"`
+	Name              string    `orm:"column(Name);size(50);"`
+	BriefName         string    `orm:"column(BriefName);size(50);"`
+	Certificate       string    `orm:"column(Certificate);size(50);"`
+	CertificateNumber string    `orm:"column(CertificateNumber);size(50);"`
+	Ceo               string    `orm:"column(Ceo);size(100);"`
+	Postcode          string    `orm:"column(Postcode);size(6);"`
+	Faxcode           string    `orm:"column(Faxcode);size(32);"`
+	Linkman           string    `orm:"column(Linkman);size(50);"`
+	Mobile            string    `orm:"column(Mobile);size(32);"`
+	Email             string    `orm:"column(Email);size(10);"`
+	Qq                string    `orm:"column(Qq);size(50);"`
+	Wechat            string    `orm:"column(Wechat);size(100);"`
+	Weibo             string    `orm:"column(Weibo);size(100);"`
+	VirtualIntegral   int64     `orm:"column(VirtualIntegral);"`
+	RealIntegral      int64     `orm:"column(RealIntegral);"`
+	FeeType           int64     `orm:"column(FeeType);"`
+	PrepayValve       float64   `orm:"column(PrepayValve);digits(28);decimals(8);"`
+	Balance           float64   `orm:"column(Balance);digits(28);decimals(8);"`
+	FrozenBalance     float64   `orm:"column(FrozenBalance);digits(28);decimals(8);"`
+	IncomingBalance   float64   `orm:"column(IncomingBalance);digits(28);decimals(8);"`
+	Commission        float64   `orm:"column(Commission);digits(28);decimals(8);"`
+	Discount          float64   `orm:"column(Discount);digits(28);decimals(8);"`
+	Province          string    `orm:"column(Province);size(100);"`
+	Area              string    `orm:"column(Area);size(100);"`
+	County            string    `orm:"column(County);size(100);"`
+	Community         string    `orm:"column(Community);size(100);"`
+	Address           string    `orm:"column(Address);size(100);"`
+	Status            int64     `orm:"column(Status);"`
+	Type              int64     `orm:"column(Type);"`
+	Grade             int64     `orm:"column(Grade);"`
+	Vocation          int64     `orm:"column(Vocation);"`
+	Reserve           string    `orm:"column(Reserve);null;size(250);"`
+	Remark            string    `orm:"column(Remark);null;size(250);"`
+	LogoIcon          string    `orm:"column(LogoIcon);size(50);"`
+	LogoUrl           string    `orm:"column(LogoUrl);size(50);"`
+	Creator           int64     `orm:"column(Creator);null;"`
+	CreateTime        time.Time `orm:"column(CreateTime);null;type(datetime);"`
+	Auditor           int64     `orm:"column(Auditor);null;"`
+	AuditTime         time.Time `orm:"column(AuditTime);null;type(datetime);"`
+	Canceler          int64     `orm:"column(Canceler);null;"`
+	CancelTime        time.Time `orm:"column(CancelTime);null;type(datetime);"`
 }
 
-//TableName
 func (this *SysCorp) TableName() string {
 	return "SysCorp"
+}
+
+func (this *SysCorp) Add() (id int64, err error) {
+	o := orm.NewOrm()
+	id, err = o.Insert(this)
+	return id, err
+}
+
+func (this *SysCorp) Count(condation *orm.Condition) (int64, error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	return qs.Count()
+}
+
+func (this *SysCorp) Update(cols ...string) (num int64, err error) {
+	o := orm.NewOrm()
+	if o.Read(this) == nil {
+		num, err := o.Update(this, cols...)
+		return num, err
+	}
+	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
+}
+
+func (this *SysCorp) Delete() (num int64, err error) {
+	o := orm.NewOrm()
+	num, err = o.Delete(this)
+	return num, err
+}
+
+func (this *SysCorp) Read(cols ...string) (*SysCorp, error) {
+	o := orm.NewOrm()
+	err := o.Read(this, cols...)
+	if err != nil {
+		return this, err
+	}
+	return this, nil
+}
+
+func (this *SysCorp) GetAll(condation *orm.Condition, sort string) (models []SysCorp) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.All(&models)
+	return models
+}
+
+func (this *SysCorp) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	var offset int64
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * page_size
+	}
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
+	count, _ = qs.Count()
+	return models, count
+}
+
+func (this *SysCorp) Validation() (err error) {
+	valid := validation.Validation{}
+	b, _ := valid.Valid(&this)
+	if !b {
+		for _, err := range valid.Errors {
+			return errors.New(err.Message)
+		}
+	}
+	return nil
 }
 
 //GetCorpByUser

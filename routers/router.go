@@ -18,6 +18,7 @@ func init() {
 	beego.Router("/main/GetMenuHorizontal", &controllers.MainController{}, "*:GetMenuHorizontal")
 	beego.Router("/main/GetMenusVertical", &controllers.MainController{}, "*:GetMenusVertical")
 	beego.AutoPrefix("/admin", &admin.MenusController{})
+	beego.AutoPrefix("/admin", &admin.UserController{})
 	//beego.Include(&controllers.MainController{})
 	//beego.AutoPrefix("/Admin",&controllers.AdminController{})
 

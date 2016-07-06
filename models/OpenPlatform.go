@@ -4,9 +4,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/validation"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -15,26 +17,103 @@ func init() {
 }
 
 type OpenPlatform struct {
-	ID           int64     `orm:"column(ID);default();index;"`
-	Corp         int64     `orm:"column(Corp);default();"`
-	PlatformType string    `orm:"column(PlatformType);size(0);default();"`
-	Token        string    `orm:"column(Token);size(0);default((''));"`
-	Appid        string    `orm:"column(Appid);size(0);default((''));index;"`
-	AppSecret    string    `orm:"column(AppSecret);size(0);default((''));"`
-	Openid       string    `orm:"column(Openid);size(0);default((''));index;"`
-	AesKey       string    `orm:"column(AesKey);size(0);default((''));"`
-	PrivateKey   string    `orm:"column(PrivateKey);size(0);default((''));"`
-	PublicKey    string    `orm:"column(PublicKey);size(0);default((''));"`
-	Reserve      string    `orm:"column(Reserve);not null;size(0);default();"`
-	Remark       string    `orm:"column(Remark);not null;size(0);default();"`
-	Creator      int64     `orm:"column(Creator);default();"`
-	CreateTime   time.Time `orm:"column(CreateTime);auto_now_add;type(datetime);default((getdate()));"`
-	Auditor      int64     `orm:"column(Auditor);not null;default();"`
-	AuditTime    time.Time `orm:"column(AuditTime);not null;auto_now_add;type(datetime);default();"`
-	Canceler     int64     `orm:"column(Canceler);not null;default();"`
-	CancelTime   time.Time `orm:"column(CancelTime);not null;auto_now_add;type(datetime);default();"`
+	ID           int64     `orm:"column(ID);pk;index;auto;"`
+	Corp         int64     `orm:"column(Corp);"`
+	PlatformType string    `orm:"column(PlatformType);size(100);"`
+	Token        string    `orm:"column(Token);size(100);"`
+	Appid        string    `orm:"column(Appid);size(200);"`
+	AppSecret    string    `orm:"column(AppSecret);size(50);"`
+	Openid       string    `orm:"column(Openid);size(32);"`
+	AesKey       string    `orm:"column(AesKey);size(44);"`
+	PrivateKey   string    `orm:"column(PrivateKey);size(1000);"`
+	PublicKey    string    `orm:"column(PublicKey);size(1000);"`
+	Reserve      string    `orm:"column(Reserve);not null;size(250);"`
+	Remark       string    `orm:"column(Remark);not null;size(250);"`
+	Creator      int64     `orm:"column(Creator);null;"`
+	CreateTime   time.Time `orm:"column(CreateTime);null;type(datetime);"`
+	Auditor      int64     `orm:"column(Auditor);null;"`
+	AuditTime    time.Time `orm:"column(AuditTime);null;type(datetime);"`
+	Canceler     int64     `orm:"column(Canceler);null;"`
+	CancelTime   time.Time `orm:"column(CancelTime);null;type(datetime);"`
 }
 
 func (this *OpenPlatform) TableName() string {
 	return "OpenPlatform"
+}
+
+func (this *OpenPlatform) Add() (id int64, err error) {
+	o := orm.NewOrm()
+	id, err = o.Insert(this)
+	return id, err
+}
+
+func (this *OpenPlatform) Count(condation *orm.Condition) (int64, error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	return qs.Count()
+}
+
+func (this *OpenPlatform) Update(cols ...string) (num int64, err error) {
+	o := orm.NewOrm()
+	if o.Read(this) == nil {
+		num, err := o.Update(this, cols...)
+		return num, err
+	}
+	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
+}
+
+func (this *OpenPlatform) Delete() (num int64, err error) {
+	o := orm.NewOrm()
+	num, err = o.Delete(this)
+	return num, err
+}
+
+func (this *OpenPlatform) Read(cols ...string) (*OpenPlatform, error) {
+	o := orm.NewOrm()
+	err := o.Read(this, cols...)
+	if err != nil {
+		return this, err
+	}
+	return this, nil
+}
+
+func (this *OpenPlatform) GetAll(condation *orm.Condition, sort string) (models []OpenPlatform) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.All(&models)
+	return models
+}
+
+func (this *OpenPlatform) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	var offset int64
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * page_size
+	}
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
+	count, _ = qs.Count()
+	return models, count
+}
+
+func (this *OpenPlatform) Validation() (err error) {
+	valid := validation.Validation{}
+	b, _ := valid.Valid(&this)
+	if !b {
+		for _, err := range valid.Errors {
+			return errors.New(err.Message)
+		}
+	}
+	return nil
 }

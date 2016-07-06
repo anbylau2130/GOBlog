@@ -35,7 +35,7 @@ body {
             <div class="app-bar-drop-container padding10 place-right no-margin-top block-shadow fg-dark" data-role="dropdown" data-no-close="true" style="width: 220px">
                 <h2 class="text-light">Quick settings</h2>
                 <ul class="unstyled-list fg-dark">
-                    <li><a href="" class="fg-white1 fg-hover-yellow">Profile</a></li>
+                    <li><a href="javascript:openIframe('admin/User/Profile')" class="fg-white1 fg-hover-yellow">Profile</a></li>
                     <li><a href="" class="fg-white2 fg-hover-yellow">Security</a></li>
                     <li><a id="exit" href="javascript:Logout()" class="fg-white3 fg-hover-yellow">Exit</a></li>
                 </ul>

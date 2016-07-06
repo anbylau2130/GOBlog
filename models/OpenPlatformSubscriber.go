@@ -4,9 +4,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/validation"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -15,23 +17,101 @@ func init() {
 }
 
 type OpenPlatformSubscriber struct {
-	Corp         int64     `orm:"column(Corp);default();"`
-	Openid       string    `orm:"column(Openid);pk;unique;size(0);default();index;"`
-	PlatformType string    `orm:"column(PlatformType);size(0);default();"`
-	Nickname     string    `orm:"column(Nickname);size(0);default((''));"`
-	Headimgurl   string    `orm:"column(Headimgurl);size(0);default((''));"`
-	Name         string    `orm:"column(Name);size(0);default((''));"`
-	Alias        string    `orm:"column(Alias);size(0);default((''));"`
-	Gender       string    `orm:"column(Gender);size(0);default(('男'));"`
-	TelePhone    string    `orm:"column(TelePhone);size(0);default((''));"`
-	MobilePhone  string    `orm:"column(MobilePhone);size(0);default((''));"`
-	Integrate    int32     `orm:"column(Integrate);default(((0)));"`
-	Reserve      string    `orm:"column(Reserve);not null;size(0);default();"`
-	Remark       string    `orm:"column(Remark);not null;size(0);default();"`
-	EnrollTime   time.Time `orm:"column(EnrollTime);auto_now_add;type(datetime);default();"`
-	CancelTime   time.Time `orm:"column(CancelTime);not null;auto_now_add;type(datetime);default();"`
+	ID           int64     `orm:"column(ID);pk;unique;index;auto;"`
+	Corp         int64     `orm:"column(Corp);"`
+	Openid       string    `orm:"column(Openid);unique;size(32);"`
+	PlatformType string    `orm:"column(PlatformType);size(100);"`
+	Nickname     string    `orm:"column(Nickname);size(100);"`
+	Headimgurl   string    `orm:"column(Headimgurl);size(200);"`
+	Name         string    `orm:"column(Name);size(100);"`
+	Alias        string    `orm:"column(Alias);size(100);"`
+	Gender       string    `orm:"column(Gender);size(2);"`
+	TelePhone    string    `orm:"column(TelePhone);size(12);"`
+	MobilePhone  string    `orm:"column(MobilePhone);size(11);"`
+	Integrate    int32     `orm:"column(Integrate);"`
+	Reserve      string    `orm:"column(Reserve);not null;size(250);"`
+	Remark       string    `orm:"column(Remark);not null;size(250);"`
+	EnrollTime   time.Time `orm:"column(EnrollTime);auto_now_add;type(datetime);"`
+	CancelTime   time.Time `orm:"column(CancelTime);not null;auto_now_add;type(datetime);"`
 }
 
 func (this *OpenPlatformSubscriber) TableName() string {
 	return "OpenPlatformSubscriber"
+}
+
+func (this *OpenPlatformSubscriber) Add() (id int64, err error) {
+	o := orm.NewOrm()
+	id, err = o.Insert(this)
+	return id, err
+}
+
+func (this *OpenPlatformSubscriber) Count(condation *orm.Condition) (int64, error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	return qs.Count()
+}
+
+func (this *OpenPlatformSubscriber) Update(cols ...string) (num int64, err error) {
+	o := orm.NewOrm()
+	if o.Read(this) == nil {
+		num, err := o.Update(this, cols...)
+		return num, err
+	}
+	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
+}
+
+func (this *OpenPlatformSubscriber) Delete() (num int64, err error) {
+	o := orm.NewOrm()
+	num, err = o.Delete(this)
+	return num, err
+}
+
+func (this *OpenPlatformSubscriber) Read(cols ...string) (*OpenPlatformSubscriber, error) {
+	o := orm.NewOrm()
+	err := o.Read(this, cols...)
+	if err != nil {
+		return this, err
+	}
+	return this, nil
+}
+
+func (this *OpenPlatformSubscriber) GetAll(condation *orm.Condition, sort string) (models []OpenPlatformSubscriber) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.All(&models)
+	return models
+}
+
+func (this *OpenPlatformSubscriber) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	var offset int64
+	if page <= 1 {
+		offset = 0
+	} else {
+		offset = (page - 1) * page_size
+	}
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
+	count, _ = qs.Count()
+	return models, count
+}
+
+func (this *OpenPlatformSubscriber) Validation() (err error) {
+	valid := validation.Validation{}
+	b, _ := valid.Valid(&this)
+	if !b {
+		for _, err := range valid.Errors {
+			return errors.New(err.Message)
+		}
+	}
+	return nil
 }
