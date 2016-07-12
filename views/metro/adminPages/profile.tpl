@@ -27,7 +27,12 @@
                             <td class="align-left">姓名：</td>
                             <td>{{.RealName}}</td>
                         </tr>
-                       
+                         <tr>
+                            <td class="align-left"></td>
+                            <td>
+                                   {{.Operator.Password}}
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
               </div>

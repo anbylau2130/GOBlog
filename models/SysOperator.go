@@ -86,10 +86,8 @@ func (this *SysOperator) Count(condation *orm.Condition) (int64, error) {
 
 func (this *SysOperator) Update(cols ...string) (num int64, err error) {
 	o := orm.NewOrm()
-	if o.Read(this) == nil {
-		num, err := o.Update(this, cols...)
-		return num, err
-	}
+	num, err = o.Update(this, cols...)
+	return num, err
 	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
 }
 

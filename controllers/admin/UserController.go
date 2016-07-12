@@ -14,6 +14,7 @@ func (user *UserController) Profile() {
 		user.Data["LoginName"] = userinfo.Operator.LoginName
 		user.Data["RealName"] = userinfo.Operator.RealName
 		user.Data["UImage"] = userinfo.Operator.UImage
+		user.Data["Operator"] = userinfo.Operator
 	}
 	user.Layout = user.GetTemplatetype() + "/shared/layout.tpl"
 	user.TplName = user.GetTemplatetype() + "/adminPages/profile.tpl"

@@ -50,6 +50,9 @@ func (main *MainController) Login() {
 			logmodel.Time = time.Now()
 			logmodel.Operator = userinfo.Operator.ID
 			logmodel.Add()
+			main.SessionRegenerateID()
+			user.Session = main.CruSession.SessionID()
+			user.Update("Session")
 			main.Rsp(true, "登录成功")
 			return
 		}
@@ -62,6 +65,26 @@ func (main *MainController) Login() {
 	}
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
 	main.TplName = main.GetTemplatetype() + "/mainPages/login.tpl"
+}
+
+func (main *MainController) CheckSSO() {
+	userinfo := main.GetSession(CurrentUserSession)
+	opSession, ok := userinfo.(*UserInfo)
+	if userinfo == nil || ok {
+		main.Rsp(false, "session is null")
+		return
+	}
+	user := new(models.SysOperator)
+	user.ID = opSession.Operator.ID
+	_, error := user.Read("ID")
+	if error == nil {
+		if user.Session == main.CruSession.SessionID() {
+			main.Rsp(true, "")
+			return
+		}
+	}
+	main.DestroySession()
+	main.Rsp(false, "有相同用户登陆或同一机器两用户登陆,您已被系统强制退出!")
 }
 
 func (main *MainController) Logout() {
