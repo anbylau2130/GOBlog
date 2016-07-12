@@ -8,6 +8,7 @@
     <link href="/static/css/metro-icons.css" rel="stylesheet">
     <link href="/static/css/metro-responsive.css" rel="stylesheet">
     <script src="/static/css/site.css"></script>
+    
     <script src="/static/js/jquery.min.js"></script>
     <script src="/static/js/metro.js"></script>
     <script src="/static/js/jquery.dataTables.min.js"></script>

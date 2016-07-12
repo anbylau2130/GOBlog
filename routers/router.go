@@ -14,6 +14,7 @@ func init() {
 	beego.Router("/Logout", &controllers.MainController{}, "*:Logout")
 	beego.Router("/main", &controllers.MainController{}, "*:Home")
 	beego.Router("/main/Home", &controllers.MainController{}, "*:Home")
+	beego.Router("/main/CheckSSO", &controllers.MainController{}, "*:CheckSSO")
 	beego.Router("/main/Login", &controllers.MainController{}, "*:Login")
 	beego.Router("/main/GetMenuHorizontal", &controllers.MainController{}, "*:GetMenuHorizontal")
 	beego.Router("/main/GetMenusVertical", &controllers.MainController{}, "*:GetMenusVertical")

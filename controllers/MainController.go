@@ -70,8 +70,9 @@ func (main *MainController) Login() {
 func (main *MainController) CheckSSO() {
 	userinfo := main.GetSession(CurrentUserSession)
 	opSession, ok := userinfo.(*UserInfo)
-	if userinfo == nil || ok {
-		main.Rsp(false, "session is null")
+	if userinfo == nil || !ok {
+		main.Data["json"] = &map[string]interface{}{"flag": false, "dateTime": "session is null"}
+		main.ServeJSON()
 		return
 	}
 	user := new(models.SysOperator)
@@ -79,12 +80,14 @@ func (main *MainController) CheckSSO() {
 	_, error := user.Read("ID")
 	if error == nil {
 		if user.Session == main.CruSession.SessionID() {
-			main.Rsp(true, "")
+			main.Data["json"] = &map[string]interface{}{"flag": true, "dateTime": time.Now()}
+			main.ServeJSON()
 			return
 		}
 	}
 	main.DestroySession()
-	main.Rsp(false, "有相同用户登陆或同一机器两用户登陆,您已被系统强制退出!")
+	main.Data["json"] = &map[string]interface{}{"flag": false, "dateTime": "有相同用户登陆或同一机器两用户登陆,您已被系统强制退出!"}
+	main.ServeJSON()
 }
 
 func (main *MainController) Logout() {
