@@ -24,6 +24,22 @@ func (main *MainController) Home() {
 	main.Data["menuHorizontal"] = menuHorizontal
 	main.Data["CorpName"] = userinfo.(*UserInfo).Corp.Name
 	main.Data["UserName"] = userinfo.(*UserInfo).Operator.RealName
+	now := struct {
+		Year   int
+		Month  int
+		Day    int
+		Hour   int
+		Minute int
+		Second int
+	}{
+		time.Now().Year(),
+		int(time.Now().Month()),
+		time.Now().Day(),
+		time.Now().Hour(),
+		time.Now().Minute(),
+		time.Now().Second(),
+	}
+	main.Data["Now"] = now
 	main.Layout = main.GetTemplatetype() + "/shared/layout.tpl"
 	main.TplName = main.GetTemplatetype() + "/mainPages/home.tpl"
 }

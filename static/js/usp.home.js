@@ -36,14 +36,22 @@
                 clearInterval(usp.home.CheckSsoPID);
                 usp.home.loginFlag = false;
                 clearInterval(usp.home.checkSSO_timer);
-                $.messager.confirm('"警告"', json.message, function(r) {
-                    window.location.href = '/';
-                });
-                window.location.href = '/';
+                usp.showDialog({
+                     width: '400',
+                     height: '200',
+                     overlay:true,
+                     modal:true,
+                     closeButton:true,
+                     type: 'default',
+                     content: "<h3>系统信息</h3><p>"+json.dateTime+"</p>",
+                     onDialogClose:function(){
+                        window.location.href = '/';
+                     }
+                })
             } else {
                 var year, month, day, seconds, minutes, hours;
-                var dateTime = json.dateTime.replace(new RegExp(/\//g), "");
-                eval('var dateTime = new ' + dateTime);
+                //var dateTime = json.dateTime.replace(new RegExp(/\//g), "");
+                eval('var dateTime = new  Date("'+json.dateTime+'")'  );
                 year = dateTime.getFullYear();
                 month = dateTime.getMonth() + 1;
                 day = dateTime.getDate();

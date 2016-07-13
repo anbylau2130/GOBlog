@@ -38,12 +38,20 @@ body {
                     <li><a href="javascript:usp.home.openIframe('admin/User/Profile')" class="fg-white1 fg-hover-yellow">个人信息</a></li>
                     <li><a href="" class="fg-white2 fg-hover-yellow">账号安全</a></li>
                     <li><a id="exit" href="javascript:usp.home.showDialog('#dialog')" class="fg-white3 fg-hover-yellow">账号注销</a></li>
-                    <li><span id="timerYear"></span>年<span id="timerMonth"></span>月<span id="timerDay"></span>日&nbsp;<span id="timerHour"></span>:<span id="timerMinute"></span>:<span id="timerSecond"></span></li>
+                    <li>
+                        <span id="timerYear">{{.Now.Year}}</span>年
+                        <span id="timerMonth">{{.Now.Month}}</span>月
+                        <span id="timerDay">{{.Now.Day}}</span>日&nbsp;
+                        <br/>
+                        <span id="timerHour">{{.Now.Hour}}</span>:
+                        <span id="timerMinute">{{.Now.Minute}}</span>:
+                        <span id="timerSecond">{{.Now.Second}}</span>
+                    </li>
                 </ul>
             </div>
         </div>
     </div>
-    <div data-role="dialog" data-close-button="true" class="padding20 dialog info" id="dialog">
+    <div data-role="dialog" data-close-button="true" class="padding20 dialog " id="dialog">
         <h1>温馨提示</h1>
         <p>
              是否安全退出？
@@ -71,6 +79,7 @@ body {
            if (window.top != window) {
                 window.top.document.location.href = window.location.href;
             }
+           
            usp.home.init($('#tabContainer'), $('#timerYear'), $('#timerMonth'), $('#timerDay'), $('#timerHour'), $('#timerMinute'), $('#timerSecond'), 'main/CheckSSO');
         })
 
