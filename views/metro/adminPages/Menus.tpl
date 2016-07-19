@@ -81,26 +81,10 @@
                 data: "URL"
             }],
             select: true,
-            buttons: [],
-            "fnServerData": function(sSource, aoData, fnCallback) {
-                $.ajax({
-                    "type": 'post',
-                    "url": sSource,
-                    "dataType": "json",
-                    "data": {
-                        aoData: JSON.stringify(aoData)
-                    },
-                    "success": function(resp) {
-                        fnCallback(resp);
-                    }
-                });
-
-            }
+            buttons: []
         });
         $("#btnAdd").on("click", function() {
-            if (table.row('.selected').data()) {
-                window.location.href = "Add?id=" + table.row('.selected').data().ID;
-            }
+                window.location.href = "Add";
         })
         $("#btnEdite").on("click", function() {
             if (table.row('.selected').data())

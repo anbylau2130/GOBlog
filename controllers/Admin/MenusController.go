@@ -22,8 +22,10 @@ func (menus *MenusController) List() {
 }
 
 func (menus *MenusController) GetList() {
+	pageindex, _ := menus.GetInt64("start")
+	pagesize, _ := menus.GetInt64("length")
 	menuModel := new(models.SysMenu)
-	models, count := menuModel.Getlist(nil, 1, 10, "ID")
+	models, count := menuModel.Getlist(nil, pageindex, pagesize, "ID")
 	menus.Data["json"] = &map[string]interface{}{"draw": 1, "recordsTotal": count, "recordsFiltered": count, "data": models}
 	menus.ServeJSON()
 }
@@ -41,36 +43,26 @@ func (menus *MenusController) GetModel() {
 	menus.Rsp(false, error.Error())
 }
 
-func (menus *MenusController) create(model models.SysMenu) *models.SysMenu {
-
-	if v, error := model.Add(); error == nil {
-		model.ID = v
-	}
-	return &model
-}
-
-func (menus *MenusController) update(model models.SysMenu) *models.SysMenu {
-
-	if v, error := model.Update(); error == nil && v == 0 {
-		return nil
-	}
-	return &model
-}
-
-func (menus *MenusController) delete(model models.SysMenu) *models.SysMenu {
-
-	if v, error := model.Delete(); error == nil && v == 0 {
-		return nil
-	}
-	return &model
-}
-
 //@MenuH {"name":"系统管理","parent":"0"}
 //@MenuH {"name":"菜单管理","parent":"系统管理"}
 //@MenuV {"name":"菜单明细","parent":"菜单管理"}
-func (menus *MenusController) Detail() {
+func (menus *MenusController) Add() {
+	if menus.IsAjax() {
+		menuModel := new(models.SysMenu)
+		if error := menus.ParseForm(menuModel); error != nil {
+			menus.Rsp(false, error.Error())
+			return
+		}
+		count, error := menuModel.Add()
+		if error == nil && count > 0 {
+			menus.Rsp(true, "Success")
+		} else {
+			menus.Rsp(false, "")
+		}
+		return
+	}
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
-	menus.TplName = menus.GetTemplatetype() + "/adminPages/menuDetail.tpl"
+	menus.TplName = menus.GetTemplatetype() + "/adminPages/addmenu.tpl"
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}

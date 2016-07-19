@@ -95,7 +95,7 @@ func (this *SysMenu) Getlist(condation *orm.Condition, page int64, page_size int
 	if page <= 1 {
 		offset = 0
 	} else {
-		offset = (page - 1) * page_size
+		offset = (page) * page_size
 	}
 	if condation != nil {
 		qs.SetCond(condation)
