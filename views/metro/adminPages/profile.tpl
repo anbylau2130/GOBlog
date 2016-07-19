@@ -1,5 +1,4 @@
 
-<div class="container">
     <div class="padding20">
         <div class="grid">
             <div class="row cells4">
@@ -39,4 +38,3 @@
             </div>
         </div>
     </div>
-</div>

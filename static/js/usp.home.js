@@ -36,14 +36,14 @@
                 clearInterval(usp.home.CheckSsoPID);
                 usp.home.loginFlag = false;
                 clearInterval(usp.home.checkSSO_timer);
-                usp.showDialog({
+                dialogWin= usp.showDialog({
                      width: '400',
                      height: '200',
                      overlay:true,
                      modal:true,
                      closeButton:true,
-                     type: 'default',
-                     content: "<h3>系统信息</h3><p>"+json.dateTime+"</p>",
+                     type: 'warning',
+                     content: "<h3>系统信息</h3><hr><p>"+json.dateTime+"</p>",
                      onDialogClose:function(){
                         window.location.href = '/';
                      }
@@ -97,11 +97,22 @@
             dialog.close();
         }
     }
+
+    usp.home.openLogoutWindow=function (){
+           dialogWin= usp.showDialog({
+                     width: '400',
+                     height: '200',
+                     overlay:true,
+                     modal:true,
+                     closeButton:true,
+                     type: 'warning',
+                     content: "<h3>系统信息</h3><hr><p>您确定要退出系统吗？<div dir=\"rtl\"><button class=\"button\" onclick=\"usp.home.logout()\">确定</button></div></p>",
+            })
+    }
     usp.home.openIframe=function (url){
             $("#iframe").attr("src",url)
             $("#iframe").attr("height",$("#cell-content").height())
-          
-        }
+    }
     usp.home.getMenuVertical=function (id){
             $.ajax({
                 type: "POST",
@@ -111,10 +122,10 @@
                     if(rsp.success){
                       var htmltag=''
                       for(i=0;i<rsp.data.length;i++)
-                        htmltag+='<li><a href=javascript:openIframe(\''+rsp.data[i].URL+'\')> '+
-                            '<span class=\''+rsp.data[i].Icon+'\'></span>'+
+                        htmltag+='<li><a href=javascript:usp.home.openIframe(\''+rsp.data[i].URL+'\')> '+
+                            '<span class=\''+rsp.data[i].Iocn+'\'></span>'+
                             '<span class=\'title\'>'+rsp.data[i].Name+'</span>'+
-                            '<span class=\'counter\'>Message:0</span>'+
+                            '<span class=\'counter\'></span>'+
                             '</a></li>'
                     }
                      $("#menusVertical").html(htmltag)

@@ -12,6 +12,7 @@ import (
 
 func main() {
 	Initialize()
+	beego.SetStaticPath("/data", "data")
 	beego.Run()
 }
 

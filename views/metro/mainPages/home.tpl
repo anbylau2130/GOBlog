@@ -13,7 +13,7 @@ body {
 </style>
 
 <div class="app-bar fixed-top darcula" data-role="appbar">
-        <a class="app-bar-element branding">{{.CorpName}}</a>
+        <a onclick="javascript:$('#menusVertical').toggleClass('compact');" class="app-bar-element branding">{{.CorpName}}</a>
         <span class="app-bar-divider"></span>
         <ul class="app-bar-menu">
                 {{range  .menuHorizontal}}
@@ -37,7 +37,7 @@ body {
                 <ul class="unstyled-list fg-dark">
                     <li><a href="javascript:usp.home.openIframe('admin/User/Profile')" class="fg-white1 fg-hover-yellow">个人信息</a></li>
                     <li><a href="" class="fg-white2 fg-hover-yellow">账号安全</a></li>
-                    <li><a id="exit" href="javascript:usp.home.showDialog('#dialog')" class="fg-white3 fg-hover-yellow">账号注销</a></li>
+                    <li><a id="exit" href="javascript:usp.home.openLogoutWindow()" class="fg-white3 fg-hover-yellow">账号注销</a></li>
                     <li>
                         <span id="timerYear">{{.Now.Year}}</span>年
                         <span id="timerMonth">{{.Now.Month}}</span>月
@@ -51,23 +51,15 @@ body {
             </div>
         </div>
     </div>
-    <div data-role="dialog" data-close-button="true" class="padding20 dialog " id="dialog">
-        <h1>温馨提示</h1>
-        <p>
-             是否安全退出？
-        </p>
-        <button class="button" onclick="usp.home.logout()">退出</button>
-        <button class="button" onclick="usp.home.showDialog('#dialog')">取消</button>
-    </div>
+   
     <div class="page-content">
         <div class="flex-grid no-responsive-future" style="height: 100%;">
             <div class="row" style="height: 100%">
-                <div class="cell size-x200" id="cell-sidebar" style="background-color: #71b1d1; height: 100%">
-                    <ul id="menusVertical" class="sidebar" >
-                      
+                <div class="cell">
+                    <ul id="menusVertical" class="sidebar compact no-responsive-future" style="height:100%" >
                     </ul>
                 </div>
-                <div id="tabContainer" class="cell auto-size padding20 bg-white" id="cell-content">
+                <div class="cell auto-size padding10 bg-white" id="cell-content">
                     <iframe id="iframe" scrolling="auto" frameborder="0"  src="" height="100%" width="100%" onload="javascript:usp.resizeIframe(this);"></iframe>
                 </div>
             </div>
@@ -79,10 +71,6 @@ body {
            if (window.top != window) {
                 window.top.document.location.href = window.location.href;
             }
-           
            usp.home.init($('#tabContainer'), $('#timerYear'), $('#timerMonth'), $('#timerDay'), $('#timerHour'), $('#timerMinute'), $('#timerSecond'), 'main/CheckSSO');
         })
-
-     
-  
     </script>

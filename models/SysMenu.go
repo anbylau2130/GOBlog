@@ -59,11 +59,8 @@ func (this *SysMenu) Count(condation *orm.Condition) (int64, error) {
 
 func (this *SysMenu) Update(cols ...string) (num int64, err error) {
 	o := orm.NewOrm()
-	if o.Read(this) == nil {
-		num, err := o.Update(this, cols...)
-		return num, err
-	}
-	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
+	num, err = o.Update(this, cols...)
+	return num, err
 }
 
 func (this *SysMenu) Delete() (num int64, err error) {
