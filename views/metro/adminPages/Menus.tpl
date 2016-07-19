@@ -12,8 +12,11 @@
 </table>
 
 <script>
+    // http://blog.csdn.net/cjaver/article/details/38143151
     $(document).ready(function() {
         var table = $('#List').DataTable({
+            iDisplayLength: 10,
+            "bServerSide": true,
             "bPaginate": true, //是否允许分页
             "bLengthChange": true, //是否显示每页显示条数
             "bFilter": true, //是否启用条件查询
@@ -79,6 +82,20 @@
             }],
             select: true,
             buttons: [],
+            "fnServerData": function(sSource, aoData, fnCallback) {
+                $.ajax({
+                    "type": 'post',
+                    "url": sSource,
+                    "dataType": "json",
+                    "data": {
+                        aoData: JSON.stringify(aoData)
+                    },
+                    "success": function(resp) {
+                        fnCallback(resp);
+                    }
+                });
+
+            }
         });
         $("#btnAdd").on("click", function() {
             if (table.row('.selected').data()) {
