@@ -1,4 +1,4 @@
-<h2>编辑菜单 <button id="return" data-bind="click: usp.admin.menus.edit.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
+<h2>编辑菜单 <button id="btnBack" data-bind="click: usp.admin.menus.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
 <hr class="thin bg-grayLighter">
 <div class="grid">
     <div class="row cells3">
@@ -94,13 +94,12 @@
         <div class="cell"></div>
     </div>
 </div>
-<button data-bind='click:usp.admin.menus.edit.save' class="button place-right primary">保存</button>
+<button data-bind='click:usp.admin.menus.add.save' class="button place-right primary">保存</button>
 </div>
-<script src="/static/js/usp.admin.menus.edit.js"></script>
+<script src="/static/js/usp.admin.menus.add.js"></script>
 <script>
     $(function() {
-        var id = {{.Model.ID}}
         usp.init()
-        usp.admin.menus.edit.init()
+        usp.admin.menus.add.init()
     })
 </script>

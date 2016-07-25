@@ -20,7 +20,6 @@
         window.location.href = "/admin/Menus/List"
     }
     usp.admin.menus.edit.save = function() {
-        console.log(ko.toJS(usp.admin.menus.edit.viewModel))
         $.ajax({
             url: "Edit",
             data: ko.toJS(usp.admin.menus.edit.viewModel),
@@ -28,11 +27,13 @@
             success: function(data) {
                 if (data.status) {
                     usp.Notify('系统信息', '保存成功', 'success')
+                    usp.admin.menus.edit.goBack()
                 } else {
                     usp.Notify('系统信息', data.info, 'alert')
                 }
             }
         })
+        return false;
     }
 
 })(this);

@@ -24,9 +24,11 @@ func (menus *MenusController) List() {
 func (menus *MenusController) GetList() {
 	pageindex, _ := menus.GetInt64("start")
 	pagesize, _ := menus.GetInt64("length")
+	draw, _ := menus.GetInt64("draw")
 	menuModel := new(models.SysMenu)
-	models, count := menuModel.Getlist(nil, pageindex, pagesize, "ID")
-	menus.Data["json"] = &map[string]interface{}{"draw": 1, "recordsTotal": count, "recordsFiltered": count, "data": models}
+	models, _ := menuModel.Getlist(nil, pageindex, pagesize, "ID")
+	count, _ := menuModel.Count(nil)
+	menus.Data["json"] = &map[string]interface{}{"draw": draw, "recordsTotal": count, "recordsFiltered": count, "data": models}
 	menus.ServeJSON()
 }
 
