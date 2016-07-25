@@ -67,6 +67,21 @@ func (menus *MenusController) Add() {
 	menus.TplName = menus.GetTemplatetype() + "/adminPages/addmenu.tpl"
 }
 
+func (menus *MenusController) Del() {
+	menuModel := new(models.SysMenu)
+	if menus.IsAjax() {
+		id, error := menus.GetInt64("id")
+		if id != 0 && error == nil {
+			menuModel.ID = id
+			count, error := menuModel.Delete()
+			if error != nil || count == 0 {
+				menus.Rsp(false, error.Error())
+			}
+		}
+	}
+	menus.Rsp(true, "Success")
+}
+
 //@MenuH {"name":"系统管理","parent":"0"}
 //@MenuH {"name":"菜单管理","parent":"系统管理"}
 //@MenuV {"name":"菜单编辑","parent":"菜单管理"}

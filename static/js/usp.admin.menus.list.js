@@ -8,6 +8,26 @@
         if (usp.admin.menus.list.table.row('.selected').data())
             window.location.href = "Edit?id=" + usp.admin.menus.list.table.row('.selected').data().ID;
     }
+
+    usp.addmin.menus.list.remove = function name(params) {
+        if (usp.admin.menus.list.table.row('.selected').data()) {
+            $.ajax({
+                url: "Del",
+                data: {
+                    id: usp.admin.menus.list.table.row('.selected').data().ID
+                },
+                async: false,
+                success: function(response) {
+                    if (response.status) {
+                        usp.admin.menus.edit.viewModel = ko.observable(response.data)
+                        usp.Notify('系统信息', response.info, 'success')
+                    } else {
+                        usp.Notify('系统信息', response.info, 'alert')
+                    }
+                }
+            });
+        }
+    }
     usp.admin.menus.list.table = null;
     usp.admin.menus.list.init = function(id, url) {
         ko.applyBindings();
