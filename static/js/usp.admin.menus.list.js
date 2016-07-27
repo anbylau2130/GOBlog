@@ -9,7 +9,7 @@
             window.location.href = "Edit?id=" + usp.admin.menus.list.table.row('.selected').data().ID;
     }
 
-    usp.addmin.menus.list.remove = function name(params) {
+    usp.admin.menus.list.remove = function name(params) {
         if (usp.admin.menus.list.table.row('.selected').data()) {
             $.ajax({
                 url: "Del",
@@ -19,7 +19,7 @@
                 async: false,
                 success: function(response) {
                     if (response.status) {
-                        usp.admin.menus.edit.viewModel = ko.observable(response.data)
+                        usp.admin.menus.list.table.row('.selected').remove().draw(false)
                         usp.Notify('系统信息', response.info, 'success')
                     } else {
                         usp.Notify('系统信息', response.info, 'alert')
@@ -32,6 +32,7 @@
     usp.admin.menus.list.init = function(id, url) {
         ko.applyBindings();
         usp.admin.menus.list.table = $(id).DataTable({
+            dom: 'Bfrtip',
             iDisplayLength: 10,
             "bServerSide": true,
             "bPaginate": true, //是否允许分页
@@ -40,6 +41,14 @@
             "bSort": true, //是否启用列排序
             "bInfo": true, //是否显示分页信息 
             "language": {
+                buttons: {
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    // colvis: 'Change columns',
+                    copy: "拷贝",
+                    excel: "导出Excel",
+                    pdf: "导出PDF",
+                    print: '打印'
+                },
                 "sProcessing": "处理中...",
                 "sLengthMenu": "显示 _MENU_ 项结果",
                 "sZeroRecords": "没有匹配结果",
@@ -72,7 +81,10 @@
             }, {
                 title: '图标',
                 name: "Icon",
-                "targets": 1
+                "targets": 1,
+                "render": function(data, type, row) {
+                    return '<span class="' + data + '"></span>'
+                },
             }, {
                 title: '区域',
                 "name": "Area",
@@ -98,7 +110,26 @@
                 data: "URL"
             }],
             select: true,
-            buttons: []
+            buttons: [{
+                text: '新增',
+                // className: "button",
+                action: function(e, dt, node, config) {
+                    usp.admin.menus.list.add()
+                }
+            }, {
+                text: '修改',
+                // className: "button",
+                action: function(e, dt, node, config) {
+                    usp.admin.menus.list.edit()
+                }
+            }, {
+                text: '删除',
+                // className: "button",
+                action: function(e, dt, node, config) {
+                    usp.admin.menus.list.remove()
+                }
+            }, 'copy', /*'csv', */ 'excel', 'pdf', 'print']
+
         });
     }
 })(this)

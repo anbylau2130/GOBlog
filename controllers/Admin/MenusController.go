@@ -79,7 +79,7 @@ func (menus *MenusController) Del() {
 			}
 		}
 	}
-	menus.Rsp(true, "Success")
+	menus.Rsp(true, "数据删除成功!")
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}
@@ -95,9 +95,9 @@ func (menus *MenusController) Edit() {
 		}
 		count, error := menuModel.Update()
 		if error == nil && count > 0 {
-			menus.Rsp(true, "Success")
+			menus.Rsp(true, "数据编辑成功!")
 		} else {
-			menus.Rsp(false, "")
+			menus.Rsp(false, error.Error())
 		}
 		return
 	}

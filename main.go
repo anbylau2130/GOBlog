@@ -8,12 +8,11 @@ import (
 	"os"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/orm"
 )
 
 func main() {
 	Initialize()
-	orm.Debug = true
+	//orm.Debug = true
 	beego.SetStaticPath("/data", "data")
 	beego.Run()
 }

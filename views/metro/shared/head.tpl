@@ -18,6 +18,13 @@
     <script src="/static/js/metro.js"></script>
     <script src="/static/js/datatables/jquery.dataTables.min.js"></script>
     <script src="/static/js/datatables/dataTables.buttons.min.js"></script>
+
+    <script src="/static/js/datatables/buttons.flash.min.js"></script>
+    <script src="/static/js/datatables/jszip.min.js"></script>
+    <script src="/static/js/datatables/pdfmake.min.js"></script>
+    <script src="/static/js/datatables/vfs_fonts.js"></script>
+    <script src="/static/js/datatables/buttons.html5.min.js"></script>
+    <script src="/static/js/datatables/buttons.print.min.js"></script>
     <script src="/static/js/datatables/dataTables.select.min.js"></script>
     <!--<script src="/static/js/datatables/dataTables.editor.js"></script>-->
     <script src="/static/js/knockout.js"></script>
