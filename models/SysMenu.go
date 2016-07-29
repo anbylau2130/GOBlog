@@ -91,12 +91,6 @@ func (this *SysMenu) GetAll(condation *orm.Condition, sort string) (models []Sys
 func (this *SysMenu) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
-	// var offset int64
-	// if page <= 1 {
-	// 	offset = 0
-	// } else {
-	// 	offset = (page) * page_size
-	// }
 	if condation != nil {
 		qs.SetCond(condation)
 	}

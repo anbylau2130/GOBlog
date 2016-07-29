@@ -14,8 +14,8 @@ type MenusController struct {
 }
 
 //@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"菜单管理","parent":"系统管理"}
-//@MenuV {"name":"菜单列表","parent":"菜单管理"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单列表","parent":"系统设置"}
 func (menus *MenusController) List() {
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
 	menus.TplName = menus.GetTemplatetype() + "/adminPages/menus.tpl"
@@ -45,9 +45,6 @@ func (menus *MenusController) GetModel() {
 	menus.Rsp(false, error.Error())
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"菜单管理","parent":"系统管理"}
-//@MenuV {"name":"菜单明细","parent":"菜单管理"}
 func (menus *MenusController) Add() {
 	if menus.IsAjax() {
 		menuModel := new(models.SysMenu)
@@ -82,9 +79,6 @@ func (menus *MenusController) Del() {
 	menus.Rsp(true, "数据删除成功!")
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"菜单管理","parent":"系统管理"}
-//@MenuV {"name":"菜单编辑","parent":"菜单管理"}
 func (menus *MenusController) Edit() {
 	menuModel := new(models.SysMenu)
 	//ajax提交
@@ -113,10 +107,6 @@ func (menus *MenusController) Edit() {
 
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"菜单管理","parent":"系统管理"}
-//@MenuV {"name":"菜单编辑","parent":"菜单管理"}
-//@Privilege {"name":"操作","parent":"菜单编辑"}
 func (menus *MenusController) CreateMenu() {
 	lib.RegisterMenus(&MenusController{})
 }

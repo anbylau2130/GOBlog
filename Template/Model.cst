@@ -1,0 +1,277 @@
+﻿<%@ CodeTemplate Inherits="CodeTemplate"TargetLanguage="Text" Description="NetTiers main template."Debug="True" ResponseEncoding="UTF-8"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+
+<%-- 要打印的表 --%>
+<%@ Property Name="Table" Type="TableSchema" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+
+//该代码使用CodeSmith
+//author：tsui
+
+package models
+
+import (
+	"errors"
+	"time"
+
+	"github.com/astaxie/beego/orm"
+	"github.com/astaxie/beego/validation"
+	_ "github.com/go-sql-driver/mysql"
+	
+)
+
+func init() {
+	orm.RegisterModel(new(<%= modifyTableName(Table.Name,"t_sys_")%>))
+}
+
+
+type <%=modifyTableName(Table.Name," ")%> struct {
+ <%for(int i=0;i<Table.Columns.Count;i++){ %>
+    <%=modifyColumnName(Table.Columns[i].Name)%>  <%=DataType2GolangType(Table.Columns[i].DataType)%>   <%=createOrmInfo(Table.Columns[i])%>
+ <%} %>
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) TableName() string {
+	return "<%=modifyTableName(Table.Name," ")%>"
+}
+
+
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Add() (id int64, err error) {
+	o := orm.NewOrm()
+	id, err = o.Insert(this)
+	return id, err
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Count(condation *orm.Condition) (int64, error) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	return qs.Count()
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Update(cols ...string) (num int64, err error) {
+	o := orm.NewOrm()
+	num, err = o.Update(this, cols...)
+	return num, err
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Delete() (num int64, err error) {
+	o := orm.NewOrm()
+	num, err = o.Delete(this)
+	return num, err
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Read(cols ...string) (*<%= modifyTableName(Table.Name," ")%>, error) {
+	o := orm.NewOrm()
+	err := o.Read(this, cols...)
+	if err != nil {
+		return this, err
+	}
+	return this, nil
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) GetAll(condation *orm.Condition, sort string) (models []<%= modifyTableName(Table.Name," ")%>) {
+		o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.All(&models)
+	return models
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
+	o := orm.NewOrm()
+	qs := o.QueryTable(this)
+	if condation != nil {
+		qs.SetCond(condation)
+	}
+	qs.Limit(page_size, page).OrderBy(sort).Values(&models)
+	count, _ = qs.Count()
+	return models, count
+}
+
+func (this *<%= modifyTableName(Table.Name," ")%>) Validation() (err error) {
+	valid := validation.Validation{}
+	b, _ := valid.Valid(&this)
+	if !b {
+		for _, err := range valid.Errors {
+			return errors.New(err.Message)
+		}
+	}
+	return nil
+}
+
+
+
+
+<script runat="template">
+
+ public string modifyTableName(string oldstr,string newstr)
+ {
+     var result=string.Empty;
+     var temp=oldstr.Replace(newstr,"");
+     for(int i=0;i<temp.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=temp[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=temp[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string modifyColumnName(string str)
+ {
+     var result=string.Empty;
+     for(int i=0;i<str.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=str[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=str[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string createOrmInfo(ColumnSchema column)
+ {
+    
+     string result= "`orm:\"column("+column.Name+");";
+     
+    if(column.IsPrimaryKeyMember)
+    {
+        result+="pk;";
+    }
+    
+    if(column.AllowDBNull)
+    {
+        result+="not null;";
+    }
+    if(column.IsUnique)
+    {
+        result+="unique;";
+    }
+    
+    if(column.NativeType.Contains("varchar"))
+    {
+        
+        result+="size("+column.Size+");";
+    }
+    
+    var typeResult= DataType2GolangType(column.DataType);
+    if(typeResult.Contains("float32")||typeResult.Contains("float64"))
+    {
+        result+="digits(28);decimals(8);";
+    }
+    
+    if(typeResult.Contains("time.Time"))
+    {
+        //auto_now_add 第一次保存时才设置时间
+        //auto_now 每次 model 保存时都会对时间自动更新
+        result+="auto_now_add;type(datetime);";
+    }
+//    if(column.ExtendedProperties["CS_Default"] != null)
+//    {
+//        result+= "default("+column.ExtendedProperties["CS_Default"].Value+");";
+//    }
+    
+    if(column.Name.ToLower()=="id")
+    {
+        result+="index;auto;";
+    }
+    
+    
+//    if(column.IsForeignKeyMember)
+//    {
+//     if(Table.Columns[i].IsForeignKeyMember)*
+//        result+="rel(fk);";
+//    }
+    return result+"\"`";
+   
+ }
+//将数据库类型转化为Golang类型
+
+public string DataType2GolangType(System.Data.DbType dbType)
+{
+    switch (dbType)
+    {
+        case DbType.AnsiString:
+            return "string";
+        case DbType.AnsiStringFixedLength:
+            return "string";
+        case DbType.Binary:
+            return "byte[]";
+        case DbType.Boolean:
+            return "bool";
+        case DbType.Byte:
+            return "byte";
+        case DbType.Currency:
+
+            return "float64";
+
+        case DbType.Date:
+            return "time.Time";
+        case DbType.DateTime:
+            return "time.Time";
+        case DbType.DateTime2:
+            return "time.Time";
+        case DbType.DateTimeOffset:
+            return "time.Time";
+        case DbType.Time:
+            return "time.Time";
+            
+        case DbType.Decimal:
+            return "float64";
+        case DbType.Double:
+            return "float64";
+
+        case DbType.Int16:
+            return "int16";
+        case DbType.Int32:
+            return "int32";
+        case DbType.Int64:
+            return "int64";
+
+        case DbType.SByte:
+            return "byte";
+
+        case DbType.Single:
+            return "float32";
+        case DbType.String:
+            return "string";
+        case DbType.StringFixedLength:
+            return "string";
+
+        case DbType.UInt16:
+            return "uint16";
+        case DbType.UInt32:
+            return "uint32";
+        case DbType.UInt64:
+            return "uint64";
+        case DbType.VarNumeric:
+            return "float64";
+        case DbType.Xml:
+            return "string";
+        default:
+            return "object";
+
+    }
+
+}
+
+</script>

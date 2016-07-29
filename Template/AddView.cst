@@ -1,0 +1,213 @@
+﻿<%@ CodeTemplate Inherits="CodeTemplate"TargetLanguage="Text" Description="NetTiers main template."Debug="True" ResponseEncoding="UTF-8"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+<%-- 要打印的表 --%>
+<%@ Property Name="Table" Type="TableSchema" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+<%@ Property Name="Area" Type="String" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+<%@ Property Name="Controller" Type="String" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+
+
+<h2><%=Controller.ToLower()%>Add <button id="btnBack" data-bind="click: usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
+<hr class="thin bg-grayLighter">
+<form data-role="validator" data-hint-mode="hint" data-on-submit="return usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.add.save()">
+        <div class="grid">
+                <%for(int i=0;i<Table.Columns.Count;i=i+2){ %>
+                 <div class="row cells2">
+                   <div class="cell">
+                            <label><%=Table.Columns[i].Name%></label>
+                            <div class="input-control text full-size">
+                                <input type="text" data-bind="value:<%=Table.Columns[i].Name%>" data-validate-func="required" data-validate-hint-position="top" data-validate-hint="不能为空!" />
+                                <span class="input-state-error mif-warning"></span>
+                                <span class="input-state-success mif-checkmark"></span>
+                            </div>
+                    </div>
+                   <div class="cell">
+                        <% if (Table.Columns.Count>i+1) {%> 
+                            <label><%=Table.Columns[i+1].Name%></label>
+                            <div class="input-control text full-size">
+                                <input type="text" data-bind="value:<%=Table.Columns[i+1].Name%>" data-validate-func="required" data-validate-hint-position="top" data-validate-hint="不能为空!" />
+                                <span class="input-state-error mif-warning"></span>
+                                <span class="input-state-success mif-checkmark"></span>
+                            </div>
+                        <%} %>
+                    </div>
+                 </div>
+                <%} %>
+        </div>
+        <button data-bind='click:usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.add.save' class="button place-right primary">保存</button>
+</form>
+<script src="/static/js/usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.add.js"></script>
+<script>
+    $(function() {
+        usp.init()
+        usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.add.init()
+    })
+</script>
+
+<script runat="template">
+
+ public string modifyTableName(string oldstr,string newstr)
+ {
+     var result=string.Empty;
+     var temp=oldstr.Replace(newstr,"");
+     for(int i=0;i<temp.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=temp[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=temp[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string modifyColumnName(string str)
+ {
+     var result=string.Empty;
+     for(int i=0;i<str.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=str[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=str[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string createOrmInfo(ColumnSchema column)
+ {
+    
+     string result= "`orm:\"column("+column.Name+");";
+     
+    if(column.IsPrimaryKeyMember)
+    {
+        result+="pk;";
+    }
+    
+    if(column.AllowDBNull)
+    {
+        result+="not null;";
+    }
+    if(column.IsUnique)
+    {
+        result+="unique;";
+    }
+    
+    if(column.NativeType.Contains("varchar"))
+    {
+        
+        result+="size("+column.Size+");";
+    }
+    
+    var typeResult= DataType2GolangType(column.DataType);
+    if(typeResult.Contains("float32")||typeResult.Contains("float64"))
+    {
+        result+="digits(28);decimals(8);";
+    }
+    
+    if(typeResult.Contains("time.Time"))
+    {
+        //auto_now_add 第一次保存时才设置时间
+        //auto_now 每次 model 保存时都会对时间自动更新
+        result+="auto_now_add;type(datetime);";
+    }
+//    if(column.ExtendedProperties["CS_Default"] != null)
+//    {
+//        result+= "default("+column.ExtendedProperties["CS_Default"].Value+");";
+//    }
+    
+    if(column.Name.ToLower()=="id")
+    {
+        result+="index;auto;";
+    }
+    
+    
+//    if(column.IsForeignKeyMember)
+//    {
+//     if(Table.Columns[i].IsForeignKeyMember)*
+//        result+="rel(fk);";
+//    }
+    return result+"\"`";
+   
+ }
+//将数据库类型转化为Golang类型
+
+public string DataType2GolangType(System.Data.DbType dbType)
+{
+    switch (dbType)
+    {
+        case DbType.AnsiString:
+            return "string";
+        case DbType.AnsiStringFixedLength:
+            return "string";
+        case DbType.Binary:
+            return "byte[]";
+        case DbType.Boolean:
+            return "bool";
+        case DbType.Byte:
+            return "byte";
+        case DbType.Currency:
+
+            return "float64";
+
+        case DbType.Date:
+            return "time.Time";
+        case DbType.DateTime:
+            return "time.Time";
+        case DbType.DateTime2:
+            return "time.Time";
+        case DbType.DateTimeOffset:
+            return "time.Time";
+        case DbType.Time:
+            return "time.Time";
+            
+        case DbType.Decimal:
+            return "float64";
+        case DbType.Double:
+            return "float64";
+
+        case DbType.Int16:
+            return "int16";
+        case DbType.Int32:
+            return "int32";
+        case DbType.Int64:
+            return "int64";
+
+        case DbType.SByte:
+            return "byte";
+
+        case DbType.Single:
+            return "float32";
+        case DbType.String:
+            return "string";
+        case DbType.StringFixedLength:
+            return "string";
+
+        case DbType.UInt16:
+            return "uint16";
+        case DbType.UInt32:
+            return "uint32";
+        case DbType.UInt64:
+            return "uint64";
+        case DbType.VarNumeric:
+            return "float64";
+        case DbType.Xml:
+            return "string";
+        default:
+            return "object";
+
+    }
+
+}
+
+</script>

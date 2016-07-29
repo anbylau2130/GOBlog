@@ -1,0 +1,287 @@
+﻿<%@ CodeTemplate Inherits="CodeTemplate"TargetLanguage="Text" Description="NetTiers main template."Debug="True" ResponseEncoding="UTF-8"%>
+
+<%@ Assembly Name="SchemaExplorer" %>
+<%@ Import Namespace="SchemaExplorer" %>
+
+<%-- 要打印的表 --%>
+<%@ Property Name="Table" Type="TableSchema" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %><%@ Property Name="Area" Type="String" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+<%@ Property Name="Controller" Type="String" DeepLoad="True" Optional="False" Category="01. Getting Started - Required" Description="Database that the tables views, and stored procedures shouldbe based on. IMPORTANT!!! If SourceTables and SourceViews are left blank, theEntire Database will then be generated." %>
+(function() {
+    usp.namespace("usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list");
+
+    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.add = function name(params) {
+        window.location.href = "Add";
+    }
+    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.edit = function name(params) {
+        if (usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table.row('.selected').data())
+            window.location.href = "Edit?id=" + usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table.row('.selected').data().ID;
+    }
+
+    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.remove = function name(params) {
+        if (usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table.row('.selected').data()) {
+            $.ajax({
+                url: "Del",
+                data: {
+                    id: usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table.row('.selected').data().ID
+                },
+                async: false,
+                success: function(response) {
+                    if (response.status) {
+                        usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table.row('.selected').remove().draw(false)
+                        usp.Notify('系统信息', response.info, 'success')
+                    } else {
+                        usp.Notify('系统信息', response.info, 'alert')
+                    }
+                }
+            });
+        }
+    }
+    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table = null;
+    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.init = function(id, url) {
+        ko.applyBindings();
+        usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.table = $(id).DataTable({
+            dom: 'Bfrtip',
+            iDisplayLength: 10,
+            "bServerSide": true,
+            "bPaginate": true, //是否允许分页
+            "bLengthChange": true, //是否显示每页显示条数
+            "bFilter": true, //是否启用条件查询
+            "bSort": true, //是否启用列排序
+            "bInfo": true, //是否显示分页信息 
+            "language": {
+                buttons: {
+                    //'copy', 'csv', 'excel', 'pdf', 'print'
+                    // colvis: 'Change columns',
+                    copy: "拷贝",
+                    excel: "导出Excel",
+                    pdf: "导出PDF",
+                    print: '打印'
+                },
+                "sProcessing": "处理中...",
+                "sLengthMenu": "显示 _MENU_ 项结果",
+                "sZeroRecords": "没有匹配结果",
+                "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                "sInfoPostFix": "",
+                "sSearch": "搜索:",
+                "sUrl": "",
+                "sEmptyTable": "表中数据为空",
+                "sLoadingRecords": "载入中...",
+                "sInfoThousands": ",",
+                "oPaginate": {
+                    "sFirst": "首页",
+                    "sPrevious": "上页",
+                    "sNext": "下页",
+                    "sLast": "末页"
+                },
+                "oAria": {
+                    "sSortAscending": ": 以升序排列此列",
+                    "sSortDescending": ": 以降序排列此列"
+                }
+            },
+            ajax: url,
+            columnDefs: [ <%for(int i=0;i<Table.Columns.Count;i++){ %>{
+                title: "<%=Table.Columns[i].Name%>",
+                name: "<%=Table.Columns[i].Name%>",
+                targets: <%=i%>,
+                orderable: true,
+                //"render": function(data, type, row) {
+                //    return '<span class="' + data + '"></span>'
+                //}
+            }, <%} %>],
+            columns: [<%for(int i=0;i<Table.Columns.Count;i++){ %>{
+                data: "<%=Table.Columns[i].Name%>"
+                },<%} %>
+            ],
+            select: true,
+            buttons: [{
+                text: '新增',
+                action: function(e, dt, node, config) {
+                    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.add()
+                }
+            }, {
+                text: '修改',
+                action: function(e, dt, node, config) {
+                    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.edit()
+                }
+            }, {
+                text: '删除',
+                action: function(e, dt, node, config) {
+                    usp.<%=Area.ToLower()%>.<%=Controller.ToLower()%>.list.remove()
+                }
+            }, 'copy', /*'csv', */ 'excel', 'pdf', 'print']
+
+        });
+    }
+})(this)
+
+
+
+
+<script runat="template">
+
+ public string modifyTableName(string oldstr,string newstr)
+ {
+     var result=string.Empty;
+     var temp=oldstr.Replace(newstr,"");
+     for(int i=0;i<temp.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=temp[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=temp[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string modifyColumnName(string str)
+ {
+     var result=string.Empty;
+     for(int i=0;i<str.Length;i++)
+     {
+            if(i==0)
+            {
+                result+=str[i].ToString().ToUpper();
+            }
+            else
+            {
+                result+=str[i].ToString();
+            }
+     }
+     
+     return result;
+ }
+ 
+ public string createOrmInfo(ColumnSchema column)
+ {
+    
+     string result= "`orm:\"column("+column.Name+");";
+     
+    if(column.IsPrimaryKeyMember)
+    {
+        result+="pk;";
+    }
+    
+    if(column.AllowDBNull)
+    {
+        result+="not null;";
+    }
+    if(column.IsUnique)
+    {
+        result+="unique;";
+    }
+    
+    if(column.NativeType.Contains("varchar"))
+    {
+        
+        result+="size("+column.Size+");";
+    }
+    
+    var typeResult= DataType2GolangType(column.DataType);
+    if(typeResult.Contains("float32")||typeResult.Contains("float64"))
+    {
+        result+="digits(28);decimals(8);";
+    }
+    
+    if(typeResult.Contains("time.Time"))
+    {
+        //auto_now_add 第一次保存时才设置时间
+        //auto_now 每次 model 保存时都会对时间自动更新
+        result+="auto_now_add;type(datetime);";
+    }
+//    if(column.ExtendedProperties["CS_Default"] != null)
+//    {
+//        result+= "default("+column.ExtendedProperties["CS_Default"].Value+");";
+//    }
+    
+    if(column.Name.ToLower()=="id")
+    {
+        result+="index;auto;";
+    }
+    
+    
+//    if(column.IsForeignKeyMember)
+//    {
+//     if(Table.Columns[i].IsForeignKeyMember)*
+//        result+="rel(fk);";
+//    }
+    return result+"\"`";
+   
+ }
+//将数据库类型转化为Golang类型
+
+public string DataType2GolangType(System.Data.DbType dbType)
+{
+    switch (dbType)
+    {
+        case DbType.AnsiString:
+            return "string";
+        case DbType.AnsiStringFixedLength:
+            return "string";
+        case DbType.Binary:
+            return "byte[]";
+        case DbType.Boolean:
+            return "bool";
+        case DbType.Byte:
+            return "byte";
+        case DbType.Currency:
+
+            return "float64";
+
+        case DbType.Date:
+            return "time.Time";
+        case DbType.DateTime:
+            return "time.Time";
+        case DbType.DateTime2:
+            return "time.Time";
+        case DbType.DateTimeOffset:
+            return "time.Time";
+        case DbType.Time:
+            return "time.Time";
+            
+        case DbType.Decimal:
+            return "float64";
+        case DbType.Double:
+            return "float64";
+
+        case DbType.Int16:
+            return "int16";
+        case DbType.Int32:
+            return "int32";
+        case DbType.Int64:
+            return "int64";
+
+        case DbType.SByte:
+            return "byte";
+
+        case DbType.Single:
+            return "float32";
+        case DbType.String:
+            return "string";
+        case DbType.StringFixedLength:
+            return "string";
+
+        case DbType.UInt16:
+            return "uint16";
+        case DbType.UInt32:
+            return "uint32";
+        case DbType.UInt64:
+            return "uint64";
+        case DbType.VarNumeric:
+            return "float64";
+        case DbType.Xml:
+            return "string";
+        default:
+            return "object";
+
+    }
+
+}
+
+</script>
