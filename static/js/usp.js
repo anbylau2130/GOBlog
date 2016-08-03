@@ -97,6 +97,7 @@
     usp.resizeIframe = function(obj) {
         //alert(obj.contentWindow.document.body.scrollHeight);
         //obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+        // $('#iframe', parent.document).perfectScrollbar();
     }
 
     usp.addTab = function(tab_container, tab_icon, tab_title, tab_href) {
@@ -105,7 +106,7 @@
             container.tabs('select', tab_title);
         } else {
             if (tab_href) {
-                var content = '<iframe scrolling="auto" frameborder="0"  src="' + tab_href + '" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%" onload="javascript:usp.resizeIframe(this);"></iframe>';
+                var content = '<iframe scrolling="auto"   frameborder="0"  src="' + tab_href + '" style="overflow:hidden;height:100%;width:100%;position:relative" height="100%" width="100%" onload="javascript:usp.resizeIframe(this);"></iframe>';
             } else {
                 content = '';
             }

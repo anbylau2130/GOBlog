@@ -129,3 +129,10 @@ func (main *MainController) GetMenusVertical() {
 	}
 	main.ServeJSON()
 }
+
+func (main *MainController) GetPWD() {
+	userName := main.GetString("UserName")
+	password := main.GetString("Password")
+	md5Pwd := lib.Pwdhash(lib.GetPassWord(userName, password))
+	main.Ctx.WriteString(md5Pwd)
+}
