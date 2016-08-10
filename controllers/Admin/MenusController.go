@@ -15,7 +15,7 @@ type MenusController struct {
 
 //@MenuH {"name":"系统管理","parent":"0"}
 //@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"菜单列表","parent":"系统设置"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
 func (menus *MenusController) List() {
 	menus.Layout = menus.GetTemplatetype() + "/shared/layout.tpl"
 	menus.TplName = menus.GetTemplatetype() + "/adminPages/menus.tpl"

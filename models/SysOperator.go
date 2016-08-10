@@ -69,10 +69,11 @@ func (this *SysOperator) TableName() string {
 	return "SysOperator"
 }
 
-func (this *SysOperator) Add() (id int64, err error) {
+func (this *SysOperator) Add(Corp, Creator int64, LoginName, RealName, Password, IdCard, Email, Mobile, Role string) (*ProcResult, error) {
 	o := orm.NewOrm()
-	id, err = o.Insert(this)
-	return id, err
+	res := new(ProcResult)
+	_, err := o.Raw("call usp_addoperator(?,?,?,?,?,?,?,?,?)", Corp, LoginName, RealName, Password, IdCard, Email, Mobile, Creator, Role).RowsToStruct(res, "IsSuccess", "ProcMsg")
+	return res, err
 }
 
 func (this *SysOperator) Count(condation *orm.Condition) (int64, error) {

@@ -16,6 +16,10 @@ func init() {
 	orm.RegisterModel(new(SysCorp))
 }
 
+type ProcResult struct {
+	IsSuccess string
+	ProcMsg   string
+}
 type SysCorp struct {
 	ID                int64     `orm:"column(ID);pk;unique;index;auto;"`
 	Parent            int64     `orm:"column(Parent);"`
@@ -67,10 +71,11 @@ func (this *SysCorp) TableName() string {
 	return "SysCorp"
 }
 
-func (this *SysCorp) Add() (id int64, err error) {
+func (this *SysCorp) Add(operator, corpType, parentCorp int64, loginName, password, corpName string) (*ProcResult, error) {
 	o := orm.NewOrm()
-	id, err = o.Insert(this)
-	return id, err
+	res := new(ProcResult)
+	_, err := o.Raw("call usp_addcorp(?,?,?,?,?,?)", corpName, corpType, operator, parentCorp, loginName, password).RowsToStruct(res, "IsSuccess", "ProcMsg")
+	return res, err
 }
 
 func (this *SysCorp) Count(condation *orm.Condition) (int64, error) {

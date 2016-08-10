@@ -132,29 +132,51 @@
         }
     };
 
+    usp.bindSelect = function(selectid, url) {
+            var control = $(selectid);
+            //设置Select2的处理
+            control.select2({
+                allowClear: true,
+                placeholder: "请选择...",
+                // formatResult: formatResult,
+                // formatSelection: formatSelection,
+                escapeMarkup: function(m) {
+                    return m;
+                }
+            });
 
-    // modal: false,
-    // overlay: false,
-    // overlayColor: 'default',
-    // overlayClickClose: false,
-    // type: 'default', // success, alert, warning, info
-    // place: 'center', // center, top-left, top-center, top-right, center-left, center-right, bottom-left, bottom-center, bottom-right
-    // position: 'default',
-    // content: false,
-    // hide: false,
-    // width: 'auto',
-    // height: 'auto',
-    // background: 'default',
-    // color: 'default',
-    // closeButton: false,
-    // windowsStyle: false,
-    // show: false,
-    // href: false,
-    // contentType: 'default', // video
-    // _interval: undefined,
-    // _overlay: undefined,
-    // onDialogOpen: function(dialog){},
-    // onDialogClose: function(dialog){}
+            //绑定Ajax的内容
+            $.getJSON(url, function(data) {
+                control.empty(); //清空下拉框
+                $.each(data, function(i, item) {
+
+                    control.append("<option value='" + item.Value + "'>&nbsp;" + item.Text + "</option>");
+
+                });
+            });
+        }
+        // modal: false,
+        // overlay: false,
+        // overlayColor: 'default',
+        // overlayClickClose: false,
+        // type: 'default', // success, alert, warning, info
+        // place: 'center', // center, top-left, top-center, top-right, center-left, center-right, bottom-left, bottom-center, bottom-right
+        // position: 'default',
+        // content: false,
+        // hide: false,
+        // width: 'auto',
+        // height: 'auto',
+        // background: 'default',
+        // color: 'default',
+        // closeButton: false,
+        // windowsStyle: false,
+        // show: false,
+        // href: false,
+        // contentType: 'default', // video
+        // _interval: undefined,
+        // _overlay: undefined,
+        // onDialogOpen: function(dialog){},
+        // onDialogClose: function(dialog){}
     usp.showDialog = function(options) {
         temp = $("<div data-role='dialog' class='padding20' ></div>")
             .appendTo("body")

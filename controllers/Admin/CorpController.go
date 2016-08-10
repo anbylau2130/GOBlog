@@ -14,7 +14,7 @@ type CorpController struct {
 
 //@MenuH {"name":"系统管理","parent":"0"}
 //@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"公司列表","parent":"系统设置"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
 func (this *CorpController) List() {
 	this.Layout = this.GetTemplatetype() + "/shared/layout.tpl"
 	this.TplName = this.GetTemplatetype() + "/adminPages/corp.tpl"
@@ -45,18 +45,37 @@ func (this *CorpController) GetModel() {
 }
 
 func (this *CorpController) Add() {
+	model := new(models.SysCorp)
 	if this.IsAjax() {
-		model := new(models.SysCorp)
-		if error := this.ParseForm(model); error != nil {
-			this.Rsp(false, error.Error())
+		userinfo := this.GetSession(controllers.CurrentUserSession)
+		opSession, _ := userinfo.(*controllers.UserInfo)
+		var adminLoginName, adminPassWord, Name string
+		if adminLoginName = this.GetString("adminLoginName"); adminLoginName == "" {
+			this.Rsp(false, "管理员账号不能为空！")
 			return
 		}
-		count, error := model.Add()
-		if error == nil && count > 0 {
+		if adminPassWord = this.GetString("adminPassWord"); adminPassWord == "" {
+			this.Rsp(false, "管理员密码不能为空！")
+			return
+		}
+		if Name = this.GetString("Name"); Name == "" {
+			this.Rsp(false, "公司名称不能为空！")
+			return
+		}
+		Type, err := this.GetInt64("Type")
+		if err != nil {
+			this.Rsp(false, err.Error())
+			return
+		}
+
+		//operator, corpType, parentCorp int64, loginName, password, corpName
+		_, error := model.Add(opSession.Operator.ID, Type, opSession.Corp.ID, adminLoginName, adminPassWord, Name)
+		if error == nil {
 			this.Rsp(true, "Success")
 		} else {
-			this.Rsp(false, "")
+			this.Rsp(false, error.Error())
 		}
+
 		return
 	}
 	this.Layout = this.GetTemplatetype() + "/shared/layout.tpl"

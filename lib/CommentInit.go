@@ -157,11 +157,11 @@ func parserMenuH(t string, pkgpath string, funcName string, controllerName strin
 
 	menu.Icon = menuH["icon"]
 	menu.Direction = false
-	menu.Area = strings.TrimLeft(pkgpath, ControllerPath)
-	menu.Controller = controllerName
-	menu.Method = funcName
-	menu.Clazz = pkgpath + "/" + controllerName
-	menu.URL = "/" + menu.Area + "/" + strings.TrimRight(menu.Controller, "Controller") + "/" + menu.Method
+	// menu.Area = strings.TrimLeft(pkgpath, ControllerPath)
+	// menu.Controller = controllerName
+	// menu.Method = funcName
+	// menu.Clazz = pkgpath + "/" + controllerName
+	// menu.URL = "/" + menu.Area + "/" + strings.TrimRight(menu.Controller, "Controller") + "/" + menu.Method
 
 	if menuH["parent"] != "0" {
 		menuModel := models.SysMenu{Name: menuH["parent"]}

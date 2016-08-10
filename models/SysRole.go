@@ -16,6 +16,10 @@ func init() {
 	orm.RegisterModel(new(SysRole))
 }
 
+type Select struct {
+	Value int64
+	Text  string
+}
 type SysRole struct {
 	ID         int64     `orm:"column(ID);pk;unique;index;auto;"`
 	Corp       int64     `orm:"column(Corp);"`
@@ -110,4 +114,14 @@ func (this *SysRole) Validation() (err error) {
 		}
 	}
 	return nil
+}
+
+func (this *SysRole) GetSelect() []Select {
+	var result []Select
+	model := SysRole{}
+	models := model.GetAll(nil, "ID")
+	for _, item := range models {
+		result = append(result, *&Select{Text: item.Name, Value: item.ID})
+	}
+	return result
 }

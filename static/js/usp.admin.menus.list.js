@@ -79,27 +79,34 @@
                 targets: 0,
                 orderable: false,
             }, {
+                title: '名称',
+                name: "Name",
+                "targets": 1,
+
+            }, {
                 title: '图标',
                 name: "Icon",
-                "targets": 1,
+                "targets": 2,
                 "render": function(data, type, row) {
                     return '<span class="' + data + '"></span>'
                 },
             }, {
                 title: '区域',
                 "name": "Area",
-                "targets": 2
+                "targets": 3
             }, {
                 title: '控制器',
                 "name": "Controller",
-                "targets": 3
+                "targets": 4
             }, {
                 title: 'URL地址',
                 "name": "URL",
-                "targets": 4
+                "targets": 5
             }, ],
             columns: [{
                 data: "ID"
+            }, {
+                data: "Name"
             }, {
                 data: "Icon"
             }, {

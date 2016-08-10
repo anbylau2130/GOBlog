@@ -24,7 +24,7 @@ type ChatRoomController struct {
 
 //@MenuH {"name":"系统管理","parent":"0"}
 //@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"聊天室列表","parent":"系统设置"}
+//@MenuV {"name":"聊天室","parent":"系统设置"}
 func (this *ChatRoomController) ChatRooms() {
 	chatrooms := new(models.SysChatRoom)
 	userinfo := this.GetSession(controllers.CurrentUserSession)
@@ -109,7 +109,6 @@ func (this *ChatRoomController) SendMsg() {
 		if err != nil {
 			return
 		}
-
 		chatroom.Publish <- chatroom.NewEvent(lib.EVENT_MESSAGE, opSession.Operator, string(p))
 	}
 }
