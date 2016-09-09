@@ -193,7 +193,7 @@ func parserMenuV(t string, pkgpath string, funcName string, controllerName strin
 	menu.Controller = controllerName
 	menu.Method = funcName
 	menu.Clazz = pkgpath + "/" + controllerName
-	menu.URL = "/" + menu.Area + "/" + strings.TrimRight(menu.Controller, "Controller") + "/" + menu.Method
+	menu.URL = "/" + menu.Area + "/" + strings.TrimSuffix(menu.Controller, "Controller") + "/" + menu.Method
 	menuModel := models.SysMenu{Name: menuV["parent"]}
 
 	if menuModel.Name != "" {
@@ -219,7 +219,7 @@ func parserPrivilege(t string, pkgpath string, funcName string, controllerName s
 	plg.Controller = controllerName
 	plg.Method = funcName
 	plg.Clazz = pkgpath + "/" + controllerName
-	plg.Url = "/" + plg.Area + "/" + strings.TrimRight(plg.Controller, "Controller") + "/" + plg.Method
+	plg.Url = "/" + plg.Area + "/" + strings.TrimSuffix(plg.Controller, "Controller") + "/" + plg.Method
 	menu := models.SysMenu{Name: privilege["parent"]}
 	if menu.Name != "" {
 		if error := o.Read(&menu, "Name"); error == nil {

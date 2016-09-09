@@ -1,122 +1,34 @@
-CREATE  PROCEDURE `usp_addoperator`(
-Corp bigint,
-LoginName varchar(100),
-RealName varchar(100),
-Password varchar(100),
-IdCard varchar(100),
-Email varchar(100),
-Mobile varchar(100),
-Creator bigint,
-Role varchar(100)
-)
-label_top:
-BEGIN
-	 declare OperatorID bigint ;
-   DECLARE `_rollback` VARCHAR(255);
-   DECLARE ProcMsg VARCHAR(250);
-   DECLARE IsSuccess VARCHAR(250);
-	 DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 'ERROR';
-	 START TRANSACTION;
-
-		if exists(select 1 from SysOperator where LoginName=LoginName and Corp=Corp)
-		THEN
-				set IsSuccess='false';
-				set ProcMsg='已存在相同的用户名';
-				SELECT IsSuccess as IsSuccess,ProcMsg as ProcMsg ;
-				LEAVE label_top;
-		ELSE 
-
-	  insert into SysOperator(
-			Corp,
-			LoginName,
-			RealName,
-			Password,
-			IdCard,
-			Email,
-			Mobile,
-			Creator,		
-			Province,
-			Area,
-			County,
-			Community,
-			CreateTime) 
-	    values(
-			 Corp, 
-			 LoginName, 
-			 RealName,
-			 Password,
-			 IdCard,
-			 Email,
-       Mobile,
-			 Creator,
-			 0,
-			 0,
-			 0,
-			 0,
-	     NOW());
-
-set @a=LAST_INSERT_ID()	;
-set @b=Creator;
-set @c=Role;
-	    PREPARE addRoleOpeartor FROM ' insert into SysRoleOperator(Role,Operator,Creator,CreateTime) select ID,?,?,NOW() from SysRole where ID in (?) ';
-		 
-		  EXECUTE addRoleOpeartor USING  @a,@b,@c;
-
-			IF `_rollback`='ERROR' THEN
-			  set IsSuccess='false';
-			  set ProcMsg='系统错误';
-        ROLLBACK;
-			ELSE
-				COMMIT;
-			END IF;
-	   SELECT IsSuccess as IsSuccess,ProcMsg as ProcMsg ;
-END IF;
-
-END label_top
-
-
-
-go
-
-
-CREATE PROCEDURE `usp_addcorp`(CorpName varchar(100),
-   CorpType bigint,
-   Operator bigint,
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_addcorp`(PCorpName varchar(100),
+   PCorpType bigint,
+   POperator bigint,
    ParentCorp bigint,
-   LoginName varchar(50),
+   PLoginName varchar(50),
    pwd  varchar(50))
 label_top:
 BEGIN
-   DECLARE `_rollback` VARCHAR(255);
-   DECLARE ProcMsg VARCHAR(250);
-   DECLARE IsSuccess VARCHAR(250);
-	 DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = 'ERROR';
-	 START TRANSACTION;
-	 set @SysCorpID:=0;
-   set @SysOperatorID:=0;
-   set @SysRoleID:=0;
+	 DECLARE `_rollback` INT DEFAULT 0;
+	 DECLARE CONTINUE HANDLER FOR SQLEXCEPTION  set  `_rollback`= 1;  
    set @datetime :=NOW();
-   set IsSuccess='true';
-   set ProcMsg=''; 
-   #判断类型表是否存在相应的数据
-   if  (exists(select 1 from SysCorp where Name=@CorpName))
+
+   select count(1) into @corpcnt from SysCorp where `Name`=PCorpName LIMIT 1;
+   if  (@corpcnt>0)
    then
-		  set IsSuccess='false';
-		  set ProcMsg='已存在相同的公司名称';
-		  SELECT IsSuccess as IsSuccess,ProcMsg as ProcMsg ;
+		  set @IsSuccess='false';
+		  set @ProcMsg='已存在相同的公司名';
+		  SELECT @IsSuccess as IsSuccess,@ProcMsg as ProcMsg ;
 		  LEAVE label_top;
    end if ;
 
-   
-  #增加一条操作员数据
-  if  (exists(select 1 from SysOperator where SysOperator.LoginName=@LoginName))
+   select count(1) INTO @cnt from SysOperator where SysOperator.LoginName=PLoginName LIMIT 1;
+ 
+  if  (@cnt>0)
   then
-		 set IsSuccess='false';
-		 set ProcMsg='已存在相同的管理员账号';
-		 SELECT IsSuccess as IsSuccess,ProcMsg as ProcMsg ;
+		 set @IsSuccess='false';
+		 set @ProcMsg='已存在相同的用户';
+		 SELECT @IsSuccess as IsSuccess,@ProcMsg as ProcMsg ;
 		 LEAVE label_top;
   end if;
-  
+      START TRANSACTION;
 			insert into SysCorp
 			(
 				Parent, Priority, Name,
@@ -136,8 +48,8 @@ BEGIN
 			)
 			values
 			(
-				ParentCorp, 0, CorpName,
-				CorpName, '', '',
+				ParentCorp, 0, PCorpName,
+				PCorpName, '', '',
 				'', '', '',
 				'', '', '',
 				'', '', '',
@@ -146,8 +58,8 @@ BEGIN
 				0, 0, 1,
 				'110000', '110000', '110000',
 				'110000', '', 0,
-				CorpType, 0, 0,
-				'', '', @Operator,
+				PCorpType, 0, 0,
+				'', '', POperator,
 				@datetime, null, null,
 				null, null
 			 );
@@ -157,15 +69,15 @@ BEGIN
 			insert into SysOperator
 				(
 					Corp, LoginName, RealName,
-					Password, Mobile, IdCard,
+					`Password`, Mobile, IdCard,
 					Email, WechatOpenid, AlipayOpenid,
 					Weibo,AvailableIP, WeatherCode,
 					VirtualIntegral,RealIntegral, Balance,
 					FrozenBalance, IncomingBalance, Commission,
 					Discount, Province, Area,
 					County, Community,Address,
-					Status, Skin, Grade,
-					Star,Session, LoginTime,
+					`Status`, Skin, Grade,
+					Star,`Session`, LoginTime,
 					LoginIP, LoginAgent,LoginCount,
 					LoginErrorCount, FrozenStartTime,FrozenEndTime,
 					Reserve, Remark, Creator,
@@ -173,8 +85,8 @@ BEGIN
 					Canceler, CancelTime
 				)
 				values (
-						@SysCorpID, LoginName, CorpName,
-						PWD,@datetime, @datetime,
+						@SysCorpID, PLoginName, PCorpName,
+						pwd,@datetime, @datetime,
 						'', '', '',
 						'', '', '110000',
 						0, 0, 0,
@@ -185,50 +97,214 @@ BEGIN
 						0, '', null,
 						null, null, 0,
 						0, null, null,
-						'', '', @Operator,
+						'', '', POperator,
 						@datetime, null, null,
 						null, null
 					);
 			set @SysOperatorID=LAST_INSERT_ID();
-			 #增加一条角色信息
 
-			insert into SysRole (
-					Corp, Name, Type,
-					Reserve, Remark, Creator,
-					CreateTime, Auditor, AuditTime,
-					Canceler, CancelTime
-			 )
-			values (
-					@SysCorpID, 'administrators', 1,
-					null, null, Operator,
-					@datetime, null, null,
-					null, null
-			 );
+		     
+                      
+                          
+          insert into SysRole (              
+              Corp, Name, Type,              
+              Reserve, Remark, Creator,              
+              CreateTime, Auditor, AuditTime,              
+              Canceler, CancelTime              
+           )              
+          values (
+              @SysCorpID, CONCAT(PCorpName,'admin') , 1,              
+              NULL, PCorpName, POperator,              
+              @datetime, 0, @datetime,              
+              null, null              
+           );              
+            
+          set @SysRoleID=LAST_INSERT_ID();  
+          
 
-			set @SysRoleID=LAST_INSERT_ID();
+          insert into SysRoleOperator(Role,Operator,Creator)
+          values(@SysRoleID,@SysOperatorID,POperator);
+                     
+               
+          insert into SysRoleMenu              
+          (              
+            Role,Menu,Reserve,              
+            Remark,Creator,CreateTime,              
+            Auditor,AuditTime,Canceler,              
+            CancelTime              
+          )  select              
+          @SysRoleID,Menu,null,  
+          null,POperator,@datetime,  
+          0,@datetime,null,  
+          null from SysMenuTemplate where `CorpType`=PCorpType;
+          
+          insert into SysRolePrivilege
+          (Role,Privilege,Creator)
+          select             
+          @SysRoleID,Privilege,Operator from SysPrivilegeTemplate where `CorpType`=PCorpType;
+                   
 
-			#临时表插入到正式表
-			insert into SysRoleMenu
-			(
-				Role,Menu,Reserve,
-				Remark,Creator,CreateTime,
-				Auditor,AuditTime,Canceler,
-				CancelTime
-			)  
-			select
-			@SysRoleID,ID,null,
-			null,@Operator,@datetime,
-			null,null,null,
-			null 
-		  from SysMenu ;
+		IF `_rollback`=1 THEN
+			set @IsSuccess='false';
+			set @ProcMsg= CONCAT(RETURNED_SQLSTATE,':',MESSAGE_TEXT);
+			ROLLBACK;
+		ELSE
+			set @IsSuccess='true';
+			set @ProcMsg='';
+			COMMIT;
+		END IF;
 
-			IF `_rollback`='ERROR' THEN
-			  set IsSuccess='false';
-			  set ProcMsg='系统错误';
-        ROLLBACK;
-			ELSE
-				COMMIT;
-			END IF;
-	   SELECT IsSuccess as IsSuccess,ProcMsg as ProcMsg ;
+	 SELECT @IsSuccess as IsSuccess ,@ProcMsg  as ProcMsg ;
+	 
 END label_top
-go
+
+
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_addoperator`(PCorp bigint,
+PLoginName varchar(100),
+PRealName varchar(100),
+Pwd varchar(100),
+PIdCard varchar(100),
+PEmail varchar(100),
+PMobile varchar(100),
+PCreator bigint,PRole varchar(100))
+label_top:
+BEGIN
+
+	 DECLARE `_rollback` INT DEFAULT 0;
+	 DECLARE CONTINUE HANDLER FOR SQLEXCEPTION  set  `_rollback`= 1;  
+		select count(1) into @cnt from SysOperator where `LoginName`=PLoginName  and `Corp`=PCorp  LIMIT 1;
+		if (@cnt>0)
+		THEN
+        
+				set @IsSuccess='false';
+				set @ProcMsg='已存在相同的用户名';
+				SELECT @IsSuccess as IsSuccess ,@ProcMsg  as ProcMsg ;
+				LEAVE label_top;
+		ELSE 
+    START TRANSACTION;
+	  insert into SysOperator(
+			`Corp`,
+			`LoginName`,
+			`RealName`,
+			`Password`,
+			`IdCard`,
+			`Email`,
+			`Mobile`,
+			`Creator`,		
+			`Province`,
+			`Area`,
+			`County`,
+			`Community`,
+			`CreateTime`) 
+	    values(
+			     PCorp, 
+					 PLoginName, 
+					 PRealName,
+					 Pwd,
+					 DATE_FORMAT(NOW(),'%Y-%m-%d-%T'),
+					 PEmail,
+					 DATE_FORMAT(NOW(),'%Y-%m-%d-%T'),
+					 PCreator,
+					 0,
+					 0,
+					 0,
+					 0,
+					DATE_FORMAT(NOW(),'%Y-%m-%d-%T'));
+	
+			set @sqlRoleOperator=CONCAT('insert into SysRoleOperator(Role,Operator,Creator,CreateTime) ',
+												'select ID,',LAST_INSERT_ID(),',',PCreator,',NOW() from SysRole',
+												' where ID in (',PRole,')');
+			
+	    PREPARE addRoleOperator FROM @sqlRoleOperator;
+    
+		  EXECUTE addRoleOperator ;
+      DEALLOCATE PREPARE addRoleOperator;
+
+		IF `_rollback`=1 THEN
+			set @IsSuccess='false';
+			set @ProcMsg= CONCAT(RETURNED_SQLSTATE,':',MESSAGE_TEXT);
+			ROLLBACK;
+		ELSE
+			set @IsSuccess='true';
+			set @ProcMsg='';
+			COMMIT;
+		END IF;
+
+	 SELECT @IsSuccess as IsSuccess ,@ProcMsg  as ProcMsg ;
+
+   
+    
+END IF;
+
+END label_top
+
+
+
+
+
+
+
+
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `usp_addrole`(RoleCorp bigint,
+RoleName varchar(100),
+Type tinyint,
+Remark varchar(250),
+Creator bigint,
+Menus varchar(250),
+PrivilegesRole varchar(250))
+label_top:
+BEGIN
+	 DECLARE `_rollback` INT DEFAULT 0;
+	 DECLARE CONTINUE HANDLER FOR SQLEXCEPTION  set  `_rollback`= 1;  
+	select count(*) INTO @cnt from SysRole where `Name`=RoleName  and `Corp`=RoleCorp ;
+  IF (@cnt<>0)THEN	
+			set @IsSuccess='false';
+			set @ProcMsg='´æÔÚÏàÍ¬µÄ½ÇÉ«Ãû';
+			SELECT @IsSuccess as IsSuccess ,@ProcMsg  as ProcMsg ;
+			LEAVE label_top;
+	ELSE
+
+
+  START TRANSACTION;
+	insert into SysRole(Corp,`Name`,`Type`,Remark,Creator,Auditor) values(RoleCorp,RoleName,Type,Remark,Creator,Creator);
+	SET @RoleID:=LAST_INSERT_ID();
+	
+
+	
+	set @sqlmenu:=CONCAT('insert into SysRoleMenu(Role,Menu,Creator,Auditor) select ',
+											@RoleID,',ID,',Creator ,',',Creator,
+											' from SysMenu where ID in (?)');
+   PREPARE addmenu FROM @sqlmenu;
+	 set @menu:=Menus;
+	 EXECUTE addmenu USING @menu;
+
+
+	 set @sqlprivilege:=CONCAT('insert into SysRolePrivilege(Role,Privilege,Creator,Auditor) select ',
+												@RoleID ,',ID,',Creator ,',',Creator,
+												' from SysPrivilege where ID in (?)');
+	 PREPARE addprivilege FROM @sqlprivilege;
+	 set @privilege:=PrivilegesRole ;
+	 EXECUTE addprivilege USING @privilege;
+	
+		IF `_rollback`=1 THEN
+			set @IsSuccess='false';
+			set @ProcMsg= CONCAT(RETURNED_SQLSTATE,':',MESSAGE_TEXT);
+			ROLLBACK;
+		ELSE
+			set @IsSuccess='true';
+			set @ProcMsg='';
+			COMMIT;
+		END IF;
+
+	 SELECT @IsSuccess as IsSuccess ,@ProcMsg  as ProcMsg ;
+    	
+
+END IF;
+
+END label_top

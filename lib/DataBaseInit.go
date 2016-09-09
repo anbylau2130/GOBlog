@@ -8,6 +8,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	_ "github.com/wendal/go-oci8"
 )
 
 var o orm.Ormer
@@ -23,9 +24,15 @@ func init() {
 
 	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8", db_user, db_pass, db_host, db_port, db_name)
 	orm.RegisterDriver("mysql", orm.DRMySQL)
-	//orm.RegisterDataBase("default", "mysql", "root:toor@tcp(127.0.0.1:3306)/usp?charset=utf8")
 	orm.RegisterDataBase("default", db_type, dns)
-
+	//orm.RegisterDataBase("default", "mysql", "root:toor@tcp(127.0.0.1:3306)/usp?charset=utf8")
+	// orm.RegisterDriver("oci8", orm.DROracle)
+	// dns := fmt.Sprintf("%s/%s@%s:%s/%s", db_user, db_pass, db_host, db_port, db_name)
+	// orm.RegisterDataBase("default", db_type, dns)
+	// o := orm.NewOrm()
+	// var t test
+	// err := o.Raw("SELECT * FROM emp").QueryRow(&t)
+	// fmt.Print(err)
 }
 
 func Syncdb() {
@@ -78,6 +85,9 @@ func Createdb() {
 		os.Remove(dns)
 		sqlstring = "create table init (n varchar(32));drop table init;"
 		break
+	// case "oci8":
+	// 	dns = fmt.Sprintf("%s/%s@%s:%s/%s", db_user, db_pass, db_host, db_port, db_name)
+	// 	sqlstring = fmt.Sprintf(" create tablespace test datafile '%s' size 500M;", db_name)
 	default:
 		beego.Critical("Database driver is not allowed:", db_type)
 	}

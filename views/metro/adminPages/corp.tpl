@@ -1,4 +1,4 @@
-<h2>SysCorpList<span class="mif-drive-eta place-right"></span></h2>
+<h2>公司管理<span class="mif-drive-eta place-right"></span></h2>
 <hr class="thin bg-grayLighter">
 <div class="toolbar">
     <div class="toolbar-section">

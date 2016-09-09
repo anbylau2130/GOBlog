@@ -4,7 +4,9 @@
 package models
 
 import (
+	"bytes"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -69,10 +71,23 @@ func (this *SysOperator) TableName() string {
 	return "SysOperator"
 }
 
-func (this *SysOperator) Add(Corp, Creator int64, LoginName, RealName, Password, IdCard, Email, Mobile, Role string) (*ProcResult, error) {
+func (this *SysOperator) Add(Corp, Creator int64, LoginName, RealName, Password, IdCard, Email, Mobile, Role string) (ProcResult, error) {
 	o := orm.NewOrm()
-	res := new(ProcResult)
-	_, err := o.Raw("call usp_addoperator(?,?,?,?,?,?,?,?,?)", Corp, LoginName, RealName, Password, IdCard, Email, Mobile, Creator, Role).RowsToStruct(res, "IsSuccess", "ProcMsg")
+	var res ProcResult
+	//res := new(ProcResult)
+	//sqlstr := "call usp_addoperator(?,?,?,?,?,?,?,?,?);", , LoginName, RealName, Password, IdCard, Email, Mobile, Creator, Role
+	var buffer bytes.Buffer
+	buffer.WriteString(`call usp_addoperator( `)
+	buffer.WriteString(strconv.FormatInt(Corp, 10) + `,`)
+	buffer.WriteString(`'` + LoginName + `',`)
+	buffer.WriteString(`'` + RealName + `',`)
+	buffer.WriteString(`'` + Password + `',`)
+	buffer.WriteString(`'` + IdCard + `',`)
+	buffer.WriteString(`'` + Email + `',`)
+	buffer.WriteString(`'` + Mobile + `',`)
+	buffer.WriteString(`'` + strconv.FormatInt(Creator, 10) + `',`)
+	buffer.WriteString(`'` + Role + `');`)
+	err := o.Raw(buffer.String()).QueryRow(&res)
 	return res, err
 }
 
@@ -111,25 +126,21 @@ func (this *SysOperator) GetAll(condation *orm.Condition, sort string) (models [
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).All(&models)
+	} else {
+		qs.All(&models)
 	}
-	qs.All(&models)
 	return models
 }
 
 func (this *SysOperator) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
-	var offset int64
-	if page <= 1 {
-		offset = 0
-	} else {
-		offset = (page - 1) * page_size
-	}
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).Limit(page_size, page).OrderBy(sort).Values(&models)
+	} else {
+		qs.Limit(page_size, page).OrderBy(sort).Values(&models)
 	}
-	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
 	count, _ = qs.Count()
 	return models, count
 }

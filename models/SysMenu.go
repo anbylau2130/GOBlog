@@ -52,9 +52,10 @@ func (this *SysMenu) Count(condation *orm.Condition) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		return qs.SetCond(condation).Count()
+	} else {
+		return qs.Count()
 	}
-	return qs.Count()
 }
 
 func (this *SysMenu) Update(cols ...string) (num int64, err error) {
@@ -82,9 +83,10 @@ func (this *SysMenu) GetAll(condation *orm.Condition, sort string) (models []Sys
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).All(&models)
+	} else {
+		qs.All(&models)
 	}
-	qs.All(&models)
 	return models
 }
 
@@ -125,20 +127,16 @@ type MenuNode struct {
 	ChildrenNode []MenuNode
 }
 
-func (this *SysMenu) GetMenuHorizontal(id int64) []MenuNode {
+func (this *SysMenu) GetMenuHorizontal(id int64, roles string) []MenuNode {
 	pNode := new(MenuNode)
-	return this.GetMenu(id, false, pNode)
+	return this.GetMenu(id, roles, false, pNode)
 }
-func (this *SysMenu) GetMenusVertical(id int64) []MenuNode {
+func (this *SysMenu) GetMenusVertical(id int64, roles string) []MenuNode {
 	pNode := new(MenuNode)
-	return this.GetMenu(id, true, pNode)
+	return this.GetMenu(id, roles, true, pNode)
 }
-func (this *SysMenu) GetMenu(parent int64, direction bool, pNode *MenuNode) []MenuNode {
-	o := orm.NewOrm()
-	sysmenu := new(SysMenu)
-	var menus []*SysMenu
-	qt := o.QueryTable(sysmenu)
-	qt.Filter("parent", parent).Filter("Direction", direction).Exclude("ID", 0).All(&menus)
+func (this *SysMenu) GetMenu(parent int64, roles string, direction bool, pNode *MenuNode) []MenuNode {
+	menus := this.GetMenusByRole(roles, parent, direction)
 	menuNodes := make([]MenuNode, 0, 0)
 	for _, value := range menus {
 		pNode.ID = value.ID
@@ -146,13 +144,25 @@ func (this *SysMenu) GetMenu(parent int64, direction bool, pNode *MenuNode) []Me
 		pNode.Name = value.Name
 		pNode.Direction = value.Direction
 		pNode.Iocn = value.Icon
-		count, error := qt.Filter("parent", value.ID).Filter("Direction", direction).Exclude("ID", 0).Count()
-		if error == nil && count > 0 {
-			pNode.ChildrenNode = this.GetMenu(value.ID, direction, new(MenuNode))
+		cnt := len(this.GetMenusByRole(roles, value.ID, direction))
+		if cnt > 0 {
+			pNode.ChildrenNode = this.GetMenu(value.ID, roles, direction, new(MenuNode))
 		}
 		menuNodes = append(menuNodes, *pNode)
 	}
 	return menuNodes
+}
+
+func (this *SysMenu) GetMenusByRole(roles string, parentMenu int64, direction bool) []SysMenu {
+	o := orm.NewOrm()
+	var menusResult []SysMenu
+	o.Raw(` 
+			SELECT c.* from sysroleoperator a
+			left JOIN sysrolemenu  b on a.Role=b.Role
+			left join sysmenu c on b.Menu=c.ID
+			where  a.Role in (?) and c.Parent=? and c.Direction=? and c.ID<>0
+	   `, roles, parentMenu, direction).QueryRows(&menusResult)
+	return menusResult
 }
 
 //GetMenuByUser 通过用户获取菜单

@@ -24,6 +24,8 @@ func init() {
 	beego.AutoPrefix("/admin", &admin.CorpController{})
 	beego.AutoPrefix("/admin", &admin.UserController{})
 	beego.AutoPrefix("/admin", &admin.ChatRoomController{})
+	beego.AutoPrefix("/admin", &admin.RoleController{})
+	beego.AutoPrefix("/admin", &admin.PrivilegeController{})
 	//beego.Include(&controllers.MainController{})
 	//beego.AutoPrefix("/Admin",&controllers.AdminController{})
 

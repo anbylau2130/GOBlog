@@ -13,19 +13,20 @@
         window.location.href = "/admin/Corp/List"
     };
     usp.admin.corp.add.save = function() {
-        $.ajax({
-            url: "Add",
-            data: ko.toJS(usp.admin.corp.add.viewModel),
-            async: false,
-            success: function(data) {
-                if (data.status) {
-                    usp.Notify('系统信息', '保存成功', 'success')
-                    usp.admin.corp.add.goBack()
-                } else {
-                    usp.Notify('系统信息', data.info, 'alert')
+        usp.admin.corp.add.viewModel.Type = ko.observable($("#type").val()),
+            $.ajax({
+                url: "Add",
+                data: ko.toJS(usp.admin.corp.add.viewModel),
+                async: false,
+                success: function(data) {
+                    if (data.status) {
+                        usp.Notify('系统信息', '保存成功', 'success')
+                        usp.admin.corp.add.goBack()
+                    } else {
+                        usp.Notify('系统信息', data.info, 'alert')
+                    }
                 }
-            }
-        })
+            })
         return false;
     }
 })(this);

@@ -1,4 +1,4 @@
-<h2>编辑菜单 <button id="return" data-bind="click: usp.admin.menus.edit.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
+<h2>修改菜单信息 <button id="return" data-bind="click: usp.admin.menus.edit.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
 <hr class="thin bg-grayLighter">
 <form data-role="validator" data-hint-mode="hint" data-on-submit="return usp.admin.menus.edit.save()">
     <div class="grid padding20">
@@ -107,7 +107,7 @@
 <script src="/static/js/usp.admin.menus.edit.js"></script>
 <script>
     $(function() {
-        var id = {{.Model.ID}}
+        var id = '{{.Model.ID}}'
         usp.init()
         usp.admin.menus.edit.init(id)
     })

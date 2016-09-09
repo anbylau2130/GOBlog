@@ -131,59 +131,69 @@
             container.tabs('select', tab_title);
         }
     };
-
     usp.bindSelect = function(selectid, url) {
             var control = $(selectid);
-            //设置Select2的处理
-            control.select2({
-                allowClear: true,
-                placeholder: "请选择...",
-                // formatResult: formatResult,
-                // formatSelection: formatSelection,
-                escapeMarkup: function(m) {
-                    return m;
-                }
-            });
-
             //绑定Ajax的内容
             $.getJSON(url, function(data) {
-                control.empty(); //清空下拉框
-                $.each(data, function(i, item) {
-
-                    control.append("<option value='" + item.Value + "'>&nbsp;" + item.Text + "</option>");
-
+                //设置Select2的处理
+                control.select2({
+                    allowClear: true,
+                    placeholder: "请选择...",
+                    data: data,
+                    escapeMarkup: function(m) {
+                        return m;
+                    }
                 });
             });
         }
-        // modal: false,
-        // overlay: false,
-        // overlayColor: 'default',
-        // overlayClickClose: false,
-        // type: 'default', // success, alert, warning, info
-        // place: 'center', // center, top-left, top-center, top-right, center-left, center-right, bottom-left, bottom-center, bottom-right
-        // position: 'default',
-        // content: false,
-        // hide: false,
-        // width: 'auto',
-        // height: 'auto',
-        // background: 'default',
-        // color: 'default',
-        // closeButton: false,
-        // windowsStyle: false,
-        // show: false,
-        // href: false,
-        // contentType: 'default', // video
-        // _interval: undefined,
-        // _overlay: undefined,
-        // onDialogOpen: function(dialog){},
-        // onDialogClose: function(dialog){}
+        // usp.bindSelect = function(selectid, url) {
+        //         var control = $(selectid);
+        //         //设置Select2的处理
+        //         control.select2({
+        //             allowClear: true,
+        //             placeholder: "请选择...",
+        //             escapeMarkup: function(m) {
+        //                 return m;
+        //             }
+        //         });
+
+    //         //绑定Ajax的内容
+    //         $.getJSON(url, function(data) {
+    //             control.empty(); //清空下拉框
+    //             $.each(data, function(i, item) {
+    //                 control.append("<option value='" + item.Value + "'>&nbsp;" + item.Text + "</option>");
+    //             });
+    //         });
+    //     }
+    // modal: false,
+    // overlay: false,
+    // overlayColor: 'default',
+    // overlayClickClose: false,
+    // type: 'default', // success, alert, warning, info
+    // place: 'center', // center, top-left, top-center, top-right, center-left, center-right, bottom-left, bottom-center, bottom-right
+    // position: 'default',
+    // content: false,
+    // hide: false,
+    // width: 'auto',
+    // height: 'auto',
+    // background: 'default',
+    // color: 'default',
+    // closeButton: false,
+    // windowsStyle: false,
+    // show: false,
+    // href: false,
+    // contentType: 'default', // video
+    // _interval: undefined,
+    // _overlay: undefined,
+    // onDialogOpen: function(dialog){},
+    // onDialogClose: function(dialog){}
     usp.showDialog = function(options) {
         temp = $("<div data-role='dialog' class='padding20' ></div>")
             .appendTo("body")
             .dialog(options);
         temp.dialog("open")
         return temp;
-    }
+    };
 
     usp.Notify = function(title, content, type) {
         // , icon, timeout, keepOpen, shadow, style
@@ -197,7 +207,7 @@
                 // shadow: shadow,
                 // style: style
         });
-    }
+    };
 
     usp.init = function() {
         // if (typeof (toastr) == 'object') {
@@ -208,5 +218,39 @@
     };
 
 
+    usp.bindJsTree = function(treeName, url, checkbox, loadedfunction) {
+        var control = $(treeName)
+        control.data('jstree', false); //清空数据，必须
+
+        var isCheck = arguments[2] || false; //设置checkbox默认值为false
+        if (isCheck) {
+            //复选框树的初始化
+            $.getJSON(url, function(data) {
+                control.jstree({
+                    'plugins': ["checkbox"], //出现选择框
+                    'checkbox': { cascade: "", three_state: false }, //不级联
+                    'core': {
+                        'data': data,
+                        "themes": {
+                            "responsive": false
+                        }
+                    }
+                }).bind('loaded.jstree', loadedfunction);
+            });
+        } else {
+            //普通树列表的初始化
+            $.getJSON(url, function(data) {
+                control.jstree({
+                    'core': {
+                        'data': data,
+                        "themes": {
+                            "responsive": false
+                        }
+                    },
+
+                }).bind('loaded.jstree', loadedfunction);
+            });
+        }
+    };
 
 })(this)

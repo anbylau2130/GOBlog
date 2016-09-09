@@ -33,3 +33,30 @@
 		values (1, 1, null, null, 1, NOW(), 1, NOW(), null, null);
 		insert into SysRolePrivilege (Role, Privilege, Reserve, Remark, Creator, CreateTime, Auditor, AuditTime, Canceler, CancelTime)
 		values (1, 1, null, null, 1, NOW(), 1, NOW(), null, null);
+
+
+    
+#delete from SysPrivilege where ID<>0;
+delete from SysRolePrivilege where ID<>0;
+#delete from SysMenu where ID<>0;
+delete from SysRoleMenu where ID<>0;
+
+insert into SysRolePrivilege  (Privilege,Role,Creator,createTime,Auditor,AuditTime)
+select ID as Privilege,
+1 as Role,
+0 as Creator,
+NOW() as createTime,
+0 as Auditor,
+NOW() as AuditTime
+from SysPrivilege as a
+where  a.ID<>0;
+
+insert into SysRoleMenu  (Menu,Role,Creator,createTime,Auditor,AuditTime)
+select ID as Menu,
+1 as Role,
+0 as Creator,
+NOW() as createTime,
+0 as Auditor,
+NOW() as AuditTime
+from SysMenu as a
+where  a.ID<>0;

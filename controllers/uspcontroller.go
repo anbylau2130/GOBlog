@@ -14,22 +14,22 @@ const (
 	CurrentUserSession = "CURRENT_USER"
 )
 
+func init() {
+	//验证权限
+	AccessRegister()
+}
+
 type UserInfo struct {
 	Operator   models.SysOperator
 	Corp       models.SysCorp
 	Menus      []models.SysMenu
 	Privileges []models.SysPrivilege
+	Role       []models.SysRole
 }
 
 // UspController 定义
 type UspController struct {
 	beego.Controller
-}
-
-func init() {
-
-	//验证权限
-	AccessRegister()
 }
 
 //Rsp Json输出
@@ -104,6 +104,7 @@ func AccessRegister() {
 		}
 	}
 	beego.InsertFilter("/*", beego.BeforeRouter, Check)
+
 }
 
 func GetAccessList(user models.SysOperator) ([]models.SysMenu, []models.SysPrivilege) {
@@ -111,23 +112,21 @@ func GetAccessList(user models.SysOperator) ([]models.SysMenu, []models.SysPrivi
 }
 func AccessDecision(params []string, userInfo UserInfo) bool {
 	if CheckAccess(params) {
-		s := fmt.Sprintf("%s/%s/%s", params[1], params[2], params[3])
+		s := fmt.Sprintf("/%s/%s/%s", params[1], params[2], params[3])
 		if len(userInfo.Menus) < 1 || len(userInfo.Privileges) < 1 {
 			return false
 		}
-
-		for _, item := range userInfo.Menus {
-			if item.URL == s {
+		arr := strings.Split(s, "?")
+		for _, menu := range userInfo.Menus {
+			if len(arr) > 0 && arr[0] != "" && strings.ToLower(menu.URL) == arr[0] {
 				return true
 			}
 		}
-		for _, item := range userInfo.Privileges {
-
-			if item.Url == s {
+		for _, privilege := range userInfo.Privileges {
+			if len(arr) > 0 && arr[0] != "" && strings.ToLower(privilege.Url) == arr[0] {
 				return true
 			}
 		}
-
 	} else {
 		return true
 	}

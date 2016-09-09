@@ -2,6 +2,7 @@ package admin
 
 import (
 	"blog/controllers"
+	"blog/lib"
 	"blog/models"
 )
 
@@ -55,6 +56,10 @@ func (this *UserController) GetModel() {
 	this.Rsp(false, error.Error())
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"员工管理","parent":"系统设置"}
+//@Privilege {"name":"新增员工","parent":"员工管理"}
 func (this *UserController) Add() {
 	if this.IsAjax() {
 		userinfo := this.GetSession(controllers.CurrentUserSession)
@@ -78,7 +83,8 @@ func (this *UserController) Add() {
 			this.Rsp(false, "角色不能为空！")
 			return
 		}
-		if LoginName := this.GetString("LoginName"); LoginName == "" {
+		// this.Ctx.Input.Params
+		if LoginName = this.GetString("LoginName"); LoginName == "" {
 			this.Rsp(false, "登录名不能为空！")
 			return
 		}
@@ -86,9 +92,13 @@ func (this *UserController) Add() {
 			this.Rsp(false, "两次输入的密码必须相同!")
 			return
 		}
-		_, error := model.Add(opSession.Corp.ID, opSession.Operator.ID, LoginName, RealName, Password, "", "", "", Role)
+		res, error := model.Add(opSession.Corp.ID, opSession.Operator.ID, LoginName, RealName, lib.Pwdhash(lib.GetPassWord(LoginName, Password)), "", "", "", Role)
 		if error == nil {
-			this.Rsp(true, "Success")
+			if res.IsSuccess == "true" {
+				this.Rsp(true, "Success")
+			} else {
+				this.Rsp(false, res.ProcMsg)
+			}
 		} else {
 			this.Rsp(false, error.Error())
 		}
@@ -99,6 +109,10 @@ func (this *UserController) Add() {
 	this.TplName = this.GetTemplatetype() + "/adminPages/adduser.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"员工管理","parent":"系统设置"}
+//@Privilege {"name":"删除员工","parent":"员工管理"}
 func (this *UserController) Del() {
 	model := new(models.SysOperator)
 	if this.IsAjax() {
@@ -114,6 +128,10 @@ func (this *UserController) Del() {
 	this.Rsp(true, "数据删除成功!")
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"员工管理","parent":"系统设置"}
+//@Privilege {"name":"编辑员工","parent":"员工管理"}
 func (this *UserController) Edit() {
 	model := new(models.SysOperator)
 	//ajax提交

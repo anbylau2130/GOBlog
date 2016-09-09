@@ -2,6 +2,7 @@ package admin
 
 import (
 	"blog/controllers"
+	"blog/lib"
 	"blog/models"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,6 +21,10 @@ func (this *CorpController) List() {
 	this.TplName = this.GetTemplatetype() + "/adminPages/corp.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
+//@Privilege {"name":"获取公司列表","parent":"公司管理"}
 func (this *CorpController) GetList() {
 	pageindex, _ := this.GetInt64("start")
 	pagesize, _ := this.GetInt64("length")
@@ -31,6 +36,10 @@ func (this *CorpController) GetList() {
 	this.ServeJSON()
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
+//@Privilege {"name":"获取公司","parent":"公司管理"}
 func (this *CorpController) GetModel() {
 	model := models.SysCorp{}
 	id, error := this.GetInt64("id")
@@ -44,6 +53,10 @@ func (this *CorpController) GetModel() {
 	this.Rsp(false, error.Error())
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
+//@Privilege {"name":"新增公司","parent":"公司管理"}
 func (this *CorpController) Add() {
 	model := new(models.SysCorp)
 	if this.IsAjax() {
@@ -69,19 +82,26 @@ func (this *CorpController) Add() {
 		}
 
 		//operator, corpType, parentCorp int64, loginName, password, corpName
-		_, error := model.Add(opSession.Operator.ID, Type, opSession.Corp.ID, adminLoginName, adminPassWord, Name)
+		res, error := model.Add(opSession.Operator.ID, Type, opSession.Corp.ID, adminLoginName, lib.Pwdhash(lib.GetPassWord(adminLoginName, adminPassWord)), Name)
 		if error == nil {
-			this.Rsp(true, "Success")
+			if res.IsSuccess == "true" {
+				this.Rsp(true, "Success")
+			} else {
+				this.Rsp(false, res.ProcMsg)
+			}
 		} else {
 			this.Rsp(false, error.Error())
 		}
-
 		return
 	}
 	this.Layout = this.GetTemplatetype() + "/shared/layout.tpl"
 	this.TplName = this.GetTemplatetype() + "/adminPages/addcorp.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
+//@Privilege {"name":"删除公司","parent":"公司管理"}
 func (this *CorpController) Del() {
 	model := new(models.SysCorp)
 	if this.IsAjax() {
@@ -97,6 +117,10 @@ func (this *CorpController) Del() {
 	this.Rsp(true, "数据删除成功!")
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"公司管理","parent":"系统设置"}
+//@Privilege {"name":"编辑公司","parent":"公司管理"}
 func (this *CorpController) Edit() {
 	model := new(models.SysCorp)
 	//ajax提交

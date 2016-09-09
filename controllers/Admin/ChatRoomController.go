@@ -38,6 +38,10 @@ func (this *ChatRoomController) ChatRooms() {
 	this.TplName = this.GetTemplatetype() + "/adminPages/chatrooms.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"聊天室","parent":"系统设置"}
+//@Privilege {"name":"创建聊天室","parent":"聊天室"}
 func (this *ChatRoomController) Create() {
 	if this.IsAjax() {
 		model := new(models.SysChatRoom)
@@ -59,6 +63,11 @@ func (this *ChatRoomController) Create() {
 	this.Layout = this.GetTemplatetype() + "/shared/layout.tpl"
 	this.TplName = this.GetTemplatetype() + "/adminPages/addchatroom.tpl"
 }
+
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"聊天室","parent":"系统设置"}
+//@Privilege {"name":"加入聊天室","parent":"聊天室"}
 func (this *ChatRoomController) Join() {
 	userinfo := this.GetSession(controllers.CurrentUserSession)
 	opSession, _ := userinfo.(*controllers.UserInfo)
@@ -85,6 +94,10 @@ func (this *ChatRoomController) Join() {
 	go chatroom.Start()
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"聊天室","parent":"系统设置"}
+//@Privilege {"name":"发送信息","parent":"聊天室"}
 func (this *ChatRoomController) SendMsg() {
 
 	userinfo := this.GetSession(controllers.CurrentUserSession)

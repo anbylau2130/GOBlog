@@ -43,7 +43,7 @@ func (this *SysCorpType) Count(condation *orm.Condition) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		return qs.SetCond(condation).Count()
 	}
 	return qs.Count()
 }
@@ -76,25 +76,21 @@ func (this *SysCorpType) GetAll(condation *orm.Condition, sort string) (models [
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).All(&models)
+	} else {
+		qs.All(&models)
 	}
-	qs.All(&models)
 	return models
 }
 
 func (this *SysCorpType) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
-	var offset int64
-	if page <= 1 {
-		offset = 0
-	} else {
-		offset = (page - 1) * page_size
-	}
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).Limit(page_size, page).OrderBy(sort).Values(&models)
+	} else {
+		qs.Limit(page_size, page).OrderBy(sort).Values(&models)
 	}
-	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
 	count, _ = qs.Count()
 	return models, count
 }
@@ -108,4 +104,14 @@ func (this *SysCorpType) Validation() (err error) {
 		}
 	}
 	return nil
+}
+
+func (this *SysCorpType) GetSelect() []Select {
+	var result []Select
+	model := SysCorpType{}
+	models := model.GetAll(nil, "ID")
+	for _, item := range models {
+		result = append(result, *&Select{Text: item.Name, Value: item.ID})
+	}
+	return result
 }

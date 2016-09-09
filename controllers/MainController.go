@@ -3,7 +3,10 @@ package controllers
 import (
 	"blog/lib"
 	"blog/models"
+	"strconv"
 	"time"
+
+	"strings"
 
 	"github.com/astaxie/beego"
 	_ "github.com/go-sql-driver/mysql"
@@ -20,7 +23,7 @@ func (main *MainController) Home() {
 	if userinfo == nil {
 		main.Ctx.Redirect(302, beego.AppConfig.String("rbac_auth_gateway"))
 	}
-	menuHorizontal := main.GetMenuHorizontal()
+	menuHorizontal := main.GetMenuHorizontal(userinfo.(*UserInfo).Role)
 	main.Data["menuHorizontal"] = menuHorizontal
 	main.Data["CorpName"] = userinfo.(*UserInfo).Corp.Name
 	main.Data["UserName"] = userinfo.(*UserInfo).Operator.RealName
@@ -58,6 +61,7 @@ func (main *MainController) Login() {
 			userinfo.Menus = models.GetMenusByUser(user)
 			userinfo.Privileges = models.GetPrivilegesByUser(user)
 			userinfo.Corp = models.GetCorpByUser(user)
+			userinfo.Role = models.GetRolesByOperator(user.ID)
 			main.SetSession(CurrentUserSession, userinfo)
 			logmodel := new(models.SysLoginLog)
 			logmodel.Ip = main.GetClientIp()
@@ -113,19 +117,29 @@ func (main *MainController) Logout() {
 }
 
 //GetMenuHorizontal 水平菜单
-func (main *MainController) GetMenuHorizontal() []models.MenuNode {
-	return new(models.SysMenu).GetMenuHorizontal(0)
+func (main *MainController) GetMenuHorizontal(roles []models.SysRole) []models.MenuNode {
+	rolestr := ""
+	for _, item := range roles {
+		rolestr += strconv.FormatInt(item.ID, 10) + ","
+	}
+	return new(models.SysMenu).GetMenuHorizontal(0, strings.TrimSuffix(rolestr, ","))
 }
 
 // GetMenusVertical 垂直菜单
 func (main *MainController) GetMenusVertical() {
 	menuOrm := new(models.SysMenu)
-	id, error := main.GetInt64("ID")
-	if error == nil {
-		rows := menuOrm.GetMenusVertical(id)
+	id, errid := main.GetInt64("ID")
+	userinfo := main.GetSession(CurrentUserSession)
+	roles := ""
+	for _, item := range userinfo.(*UserInfo).Role {
+		roles += strconv.FormatInt(item.ID, 10) + ","
+	}
+
+	if errid == nil {
+		rows := menuOrm.GetMenusVertical(id, strings.TrimSuffix(roles, ","))
 		main.Data["json"] = &map[string]interface{}{"success": true, "data": &rows}
 	} else {
-		main.Data["json"] = &map[string]interface{}{"success": false, "data": error}
+		main.Data["json"] = &map[string]interface{}{"success": false, "data": errid.Error()}
 	}
 	main.ServeJSON()
 }

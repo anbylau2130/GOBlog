@@ -1,4 +1,4 @@
-<h2>userAdd <button id="btnBack" data-bind="click: usp.admin.user.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
+<h2>新增员工 <button id="btnBack" data-bind="click: usp.admin.user.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
 <hr class="thin bg-grayLighter">
 <form data-role="validator" data-hint-mode="hint" data-on-submit="return usp.admin.user.add.save()">
     <div class="grid no-padding-top padding100">

@@ -4625,7 +4625,7 @@
         version: "3.0.14",
 
         options: {
-            format: "yyyy.mm.dd",
+            format: "yyyy-MM-dd",
             preset: false,
             minDate: false,
             maxDate: false,

@@ -10,6 +10,7 @@
     <link href="/static/css/datatables/autoFill.dataTables.min.css" rel="stylesheet">
     <link href="/static/css/datatables/buttons.dataTables.min.css" rel="stylesheet">
     <link href="/static/css/datatables/select.dataTables.min.css" rel="stylesheet">
+    <link href="/static/css/jstree.min.css" rel="stylesheet">
     <script src="/static/css/site.css"></script>
 
     <script src="/static/js/jquery.min.js"></script>
@@ -26,6 +27,7 @@
     <script src="/static/js/knockout.js"></script>
     <script src="/static/js/jquery.tmpl.min.js"></script>
     <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/jstree.js"></script>
     <script src="/static/js/site.js"></script>
     <script src="/static/js/usp.js"></script>
 </head>

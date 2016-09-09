@@ -4,7 +4,9 @@
 package models
 
 import (
+	"bytes"
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/astaxie/beego/orm"
@@ -17,8 +19,8 @@ func init() {
 }
 
 type Select struct {
-	Value int64
-	Text  string
+	Value int64  `json:"id"`
+	Text  string `json:"text"`
 }
 type SysRole struct {
 	ID         int64     `orm:"column(ID);pk;unique;index;auto;"`
@@ -39,10 +41,20 @@ func (this *SysRole) TableName() string {
 	return "SysRole"
 }
 
-func (this *SysRole) Add() (id int64, err error) {
+func (this *SysRole) Add(Corp, Creator, Type int64, Name, Remark, Menus, Privileges string) (ProcResult, error) {
 	o := orm.NewOrm()
-	id, err = o.Insert(this)
-	return id, err
+	var res ProcResult
+	var buffer bytes.Buffer
+	buffer.WriteString(`call usp_addrole( `)
+	buffer.WriteString(`'` + strconv.FormatInt(Corp, 10) + `',`)
+	buffer.WriteString(`'` + Name + `',`)
+	buffer.WriteString(`'` + strconv.FormatInt(Type, 10) + `',`)
+	buffer.WriteString(`'` + Remark + `',`)
+	buffer.WriteString(`'` + strconv.FormatInt(Creator, 10) + `',`)
+	buffer.WriteString(`'` + Menus + `',`)
+	buffer.WriteString(`'` + Privileges + `');`)
+	err := o.Raw(buffer.String()).QueryRow(&res)
+	return res, err
 }
 
 func (this *SysRole) Count(condation *orm.Condition) (int64, error) {
@@ -54,13 +66,18 @@ func (this *SysRole) Count(condation *orm.Condition) (int64, error) {
 	return qs.Count()
 }
 
-func (this *SysRole) Update(cols ...string) (num int64, err error) {
+func (this *SysRole) Update(role, creator int64, name, remark, menus, privileges string) (res ProcResult, err error) {
 	o := orm.NewOrm()
-	if o.Read(this) == nil {
-		num, err := o.Update(this, cols...)
-		return num, err
-	}
-	return 0, errors.New("找不到ID=‘" + string(this.ID) + "’的数据!")
+	var buffer bytes.Buffer
+	buffer.WriteString(`call usp_editrole( `)
+	buffer.WriteString(`'` + strconv.FormatInt(role, 10) + `',`)
+	buffer.WriteString(`'` + name + `',`)
+	buffer.WriteString(`'` + remark + `',`)
+	buffer.WriteString(`'` + strconv.FormatInt(creator, 10) + `',`)
+	buffer.WriteString(`'` + menus + `',`)
+	buffer.WriteString(`'` + privileges + `');`)
+	err = o.Raw(buffer.String()).QueryRow(&res)
+	return res, err
 }
 
 func (this *SysRole) Delete() (num int64, err error) {
@@ -82,25 +99,22 @@ func (this *SysRole) GetAll(condation *orm.Condition, sort string) (models []Sys
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).All(&models)
+	} else {
+		qs.All(&models)
 	}
-	qs.All(&models)
+
 	return models
 }
 
 func (this *SysRole) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
-	var offset int64
-	if page <= 1 {
-		offset = 0
-	} else {
-		offset = (page - 1) * page_size
-	}
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).Limit(page_size, page).OrderBy(sort).Values(&models)
+	} else {
+		qs.Limit(page_size, page).OrderBy(sort).Values(&models)
 	}
-	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
 	count, _ = qs.Count()
 	return models, count
 }
@@ -124,4 +138,15 @@ func (this *SysRole) GetSelect() []Select {
 		result = append(result, *&Select{Text: item.Name, Value: item.ID})
 	}
 	return result
+}
+
+func GetRolesByOperator(operator int64) []SysRole {
+	o := orm.NewOrm()
+	var models []SysRole
+	o.Raw(`
+   		select b.* from SysRoleOperator a 
+		left join SysRole b on a.Role=b.ID
+		   where a.operator=? 
+   `, operator).QueryRows(&models)
+	return models
 }

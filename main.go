@@ -21,7 +21,7 @@ func Initialize() {
 	mime.AddExtensionType(".css", "text/css")
 	//判断初始化参数
 	initArgs()
-
+	lib.RegisterMenus(&admin.MenusController{})
 	lib.Connect()
 }
 

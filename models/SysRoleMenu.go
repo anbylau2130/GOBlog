@@ -44,9 +44,10 @@ func (this *SysRoleMenu) Count(condation *orm.Condition) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		return qs.SetCond(condation).Count()
+	} else {
+		return qs.Count()
 	}
-	return qs.Count()
 }
 
 func (this *SysRoleMenu) Update(cols ...string) (num int64, err error) {

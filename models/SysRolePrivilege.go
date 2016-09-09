@@ -44,9 +44,10 @@ func (this *SysRolePrivilege) Count(condation *orm.Condition) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		return qs.SetCond(condation).Count()
+	} else {
+		return qs.Count()
 	}
-	return qs.Count()
 }
 
 func (this *SysRolePrivilege) Update(cols ...string) (num int64, err error) {
@@ -109,4 +110,13 @@ func (this *SysRolePrivilege) Validation() (err error) {
 		}
 	}
 	return nil
+}
+
+//GetModelByRole 通过Role Id获取RoleMenu
+func (this *SysRolePrivilege) GetModelByRole(role int64) []SysRolePrivilege {
+	o := orm.NewOrm()
+	var roleprivileges []SysRolePrivilege
+	qt := o.QueryTable(this)
+	qt.Filter("Role", role).All(&roleprivileges)
+	return roleprivileges
 }

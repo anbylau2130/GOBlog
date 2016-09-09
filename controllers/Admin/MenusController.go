@@ -21,6 +21,10 @@ func (menus *MenusController) List() {
 	menus.TplName = menus.GetTemplatetype() + "/adminPages/menus.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
+//@Privilege {"name":"获取菜单列表","parent":"菜单管理"}
 func (menus *MenusController) GetList() {
 	pageindex, _ := menus.GetInt64("start")
 	pagesize, _ := menus.GetInt64("length")
@@ -32,6 +36,10 @@ func (menus *MenusController) GetList() {
 	menus.ServeJSON()
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
+//@Privilege {"name":"获取菜单","parent":"菜单管理"}
 func (menus *MenusController) GetModel() {
 	menuModel := models.SysMenu{}
 	id, error := menus.GetInt64("id")
@@ -45,6 +53,10 @@ func (menus *MenusController) GetModel() {
 	menus.Rsp(false, error.Error())
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
+//@Privilege {"name":"新增菜单","parent":"菜单管理"}
 func (menus *MenusController) Add() {
 	if menus.IsAjax() {
 		menuModel := new(models.SysMenu)
@@ -64,6 +76,10 @@ func (menus *MenusController) Add() {
 	menus.TplName = menus.GetTemplatetype() + "/adminPages/addmenu.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
+//@Privilege {"name":"删除菜单","parent":"菜单管理"}
 func (menus *MenusController) Del() {
 	menuModel := new(models.SysMenu)
 	if menus.IsAjax() {
@@ -79,6 +95,10 @@ func (menus *MenusController) Del() {
 	menus.Rsp(true, "数据删除成功!")
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"菜单管理","parent":"系统设置"}
+//@Privilege {"name":"编辑菜单","parent":"菜单管理"}
 func (menus *MenusController) Edit() {
 	menuModel := new(models.SysMenu)
 	//ajax提交

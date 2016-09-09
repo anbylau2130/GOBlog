@@ -1,4 +1,4 @@
-<h2>编辑菜单 <button id="btnBack" data-bind="click: usp.admin.menus.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
+<h2>新增菜单 <button id="btnBack" data-bind="click: usp.admin.menus.add.goBack" class="button place-right primary"><span class="mif-keyboard-return "></span></button></h2>
 <hr class="thin bg-grayLighter">
 <div class="grid">
     <div class="row cells3">

@@ -51,9 +51,10 @@ func (this *SysPrivilege) Count(condation *orm.Condition) (int64, error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		return qs.SetCond(condation).Count()
+	} else {
+		return qs.Count()
 	}
-	return qs.Count()
 }
 
 func (this *SysPrivilege) Update(cols ...string) (num int64, err error) {
@@ -84,25 +85,21 @@ func (this *SysPrivilege) GetAll(condation *orm.Condition, sort string) (models 
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).All(&models)
+	} else {
+		qs.All(&models)
 	}
-	qs.All(&models)
 	return models
 }
 
 func (this *SysPrivilege) Getlist(condation *orm.Condition, page int64, page_size int64, sort string) (models []orm.Params, count int64) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(this)
-	var offset int64
-	if page <= 1 {
-		offset = 0
-	} else {
-		offset = (page - 1) * page_size
-	}
 	if condation != nil {
-		qs.SetCond(condation)
+		qs.SetCond(condation).Limit(page_size, page).OrderBy(sort).Values(&models)
+	} else {
+		qs.Limit(page_size, page).OrderBy(sort).Values(&models)
 	}
-	qs.Limit(page_size, offset).OrderBy(sort).Values(&models)
 	count, _ = qs.Count()
 	return models, count
 }
