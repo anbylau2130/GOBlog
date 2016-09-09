@@ -32,6 +32,10 @@ func (this *UserController) List() {
 	this.TplName = this.GetTemplatetype() + "/adminPages/users.tpl"
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"员工管理","parent":"系统设置"}
+//@Privilege {"name":"获取员工列表","parent":"员工管理"}
 func (this *UserController) GetList() {
 	pageindex, _ := this.GetInt64("start")
 	pagesize, _ := this.GetInt64("length")
@@ -43,6 +47,10 @@ func (this *UserController) GetList() {
 	this.ServeJSON()
 }
 
+//@MenuH {"name":"系统管理","parent":"0"}
+//@MenuH {"name":"系统设置","parent":"系统管理"}
+//@MenuV {"name":"员工管理","parent":"系统设置"}
+//@Privilege {"name":"获取员工","parent":"员工管理"}
 func (this *UserController) GetModel() {
 	model := models.SysOperator{}
 	id, error := this.GetInt64("id")

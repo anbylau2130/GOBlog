@@ -31,10 +31,6 @@ type ServiceController struct {
 	UspController
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"服务项管理","parent":"系统设置"}
-//@Privilege {"name":"角色下拉框","parent":"服务项管理"}
 func (this *ServiceController) RoleSelect() {
 	role := new(models.SysRole)
 	this.Data["json"] = role.GetSelect()
@@ -42,10 +38,6 @@ func (this *ServiceController) RoleSelect() {
 	return
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"服务项管理","parent":"系统设置"}
-//@Privilege {"name":"公司类型下拉框","parent":"服务项管理"}
 func (this *ServiceController) CorpTypeSelect() {
 	corpType := new(models.SysCorpType)
 	this.Data["json"] = corpType.GetSelect()
@@ -53,10 +45,6 @@ func (this *ServiceController) CorpTypeSelect() {
 	return
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"服务项管理","parent":"系统设置"}
-//@Privilege {"name":"角色Tree","parent":"服务项管理"}
 func (this *ServiceController) RoleTree() {
 	treenodes := this.PowerTree(0)
 	this.Data["json"] = treenodes
@@ -64,10 +52,6 @@ func (this *ServiceController) RoleTree() {
 	return
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"服务项管理","parent":"系统设置"}
-//@Privilege {"name":"角色Tree初始化","parent":"服务项管理"}
 func (this *ServiceController) RoleTreeInit() {
 	role, _ := this.GetInt64("Role")
 	treenodes := this.PowerTree(0)
@@ -91,10 +75,6 @@ func (this *ServiceController) RoleTreeInit() {
 	return
 }
 
-//@MenuH {"name":"系统管理","parent":"0"}
-//@MenuH {"name":"系统设置","parent":"系统管理"}
-//@MenuV {"name":"服务项管理","parent":"系统设置"}
-//@Privilege {"name":"权限Tree初始化","parent":"服务项管理"}
 func (this *ServiceController) PowerTree(id int64) []TreeNode {
 	menu := new(models.SysMenu)
 	menus := menu.GetAll(nil, "ID")
