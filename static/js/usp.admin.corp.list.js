@@ -40,6 +40,7 @@
             "bFilter": true, //是否启用条件查询
             "bSort": true, //是否启用列排序
             "bInfo": true, //是否显示分页信息 
+            "bScrollCollapse": false, //当显示的数据不足以支撑表格的默认的高度时，依然显示纵向的滚动条。(默认是false)      
             "language": {
                 buttons: {
                     //'copy', 'csv', 'excel', 'pdf', 'print'
@@ -73,6 +74,7 @@
                 }
             },
             ajax: url,
+
             columnDefs: [{
                 title: "ID",
                 name: "ID",
@@ -82,23 +84,25 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Parent",
+                title: "父公司",
                 name: "Parent",
                 targets: 1,
                 orderable: true,
+                "width": "200px",
                 //"render": function(data, type, row) {
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Priority",
+                title: "公司优先级(0-9)",
                 name: "Priority",
                 targets: 2,
+                "width": "20%",
                 orderable: true,
                 //"render": function(data, type, row) {
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Name",
+                title: "公司名称",
                 name: "Name",
                 targets: 3,
                 orderable: true,
@@ -106,7 +110,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "BriefName",
+                title: "公司简称",
                 name: "BriefName",
                 targets: 4,
                 orderable: true,
@@ -114,7 +118,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Certificate",
+                title: "证书名称",
                 name: "Certificate",
                 targets: 5,
                 orderable: true,
@@ -122,7 +126,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "CertificateNumber",
+                title: "证书号码",
                 name: "CertificateNumber",
                 targets: 6,
                 orderable: true,
@@ -130,7 +134,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Ceo",
+                title: "法人代表",
                 name: "Ceo",
                 targets: 7,
                 orderable: true,
@@ -138,7 +142,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Postcode",
+                title: "邮编",
                 name: "Postcode",
                 targets: 8,
                 orderable: true,
@@ -146,7 +150,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Faxcode",
+                title: "传真号",
                 name: "Faxcode",
                 targets: 9,
                 orderable: true,
@@ -154,7 +158,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Linkman",
+                title: "联系人",
                 name: "Linkman",
                 targets: 10,
                 orderable: true,
@@ -162,7 +166,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Mobile",
+                title: "联系手机",
                 name: "Mobile",
                 targets: 11,
                 orderable: true,
@@ -178,7 +182,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Qq",
+                title: "联系QQ",
                 name: "Qq",
                 targets: 13,
                 orderable: true,
@@ -186,7 +190,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Wechat",
+                title: "微信",
                 name: "Wechat",
                 targets: 14,
                 orderable: true,
@@ -194,7 +198,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Weibo",
+                title: "微博",
                 name: "Weibo",
                 targets: 15,
                 orderable: true,
@@ -202,7 +206,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "VirtualIntegral",
+                title: "虚拟积分",
                 name: "VirtualIntegral",
                 targets: 16,
                 orderable: true,
@@ -210,7 +214,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "RealIntegral",
+                title: "真实积分",
                 name: "RealIntegral",
                 targets: 17,
                 orderable: true,
@@ -218,7 +222,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "FeeType",
+                title: "付费类型",
                 name: "FeeType",
                 targets: 18,
                 orderable: true,
@@ -226,7 +230,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "PrepayValve",
+                title: "预付阀值",
                 name: "PrepayValve",
                 targets: 19,
                 orderable: true,
@@ -234,7 +238,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Balance",
+                title: "余额",
                 name: "Balance",
                 targets: 20,
                 orderable: true,
@@ -242,7 +246,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "FrozenBalance",
+                title: "冻结余额",
                 name: "FrozenBalance",
                 targets: 21,
                 orderable: true,
@@ -250,7 +254,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "IncomingBalance",
+                title: "在途余额",
                 name: "IncomingBalance",
                 targets: 22,
                 orderable: true,
@@ -258,7 +262,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Commission",
+                title: "佣金比例",
                 name: "Commission",
                 targets: 23,
                 orderable: true,
@@ -266,7 +270,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Discount",
+                title: "折扣比例",
                 name: "Discount",
                 targets: 24,
                 orderable: true,
@@ -274,7 +278,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Province",
+                title: "省份",
                 name: "Province",
                 targets: 25,
                 orderable: true,
@@ -282,7 +286,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Area",
+                title: "地区",
                 name: "Area",
                 targets: 26,
                 orderable: true,
@@ -290,7 +294,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "County",
+                title: "县",
                 name: "County",
                 targets: 27,
                 orderable: true,
@@ -298,7 +302,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Community",
+                title: "社区",
                 name: "Community",
                 targets: 28,
                 orderable: true,
@@ -306,7 +310,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Address",
+                title: "地址",
                 name: "Address",
                 targets: 29,
                 orderable: true,
@@ -314,7 +318,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Status",
+                title: "状态",
                 name: "Status",
                 targets: 30,
                 orderable: true,
@@ -322,7 +326,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Type",
+                title: "类型",
                 name: "Type",
                 targets: 31,
                 orderable: true,
@@ -330,7 +334,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Grade",
+                title: "级别",
                 name: "Grade",
                 targets: 32,
                 orderable: true,
@@ -338,7 +342,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Vocation",
+                title: "行业类型",
                 name: "Vocation",
                 targets: 33,
                 orderable: true,
@@ -362,7 +366,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Creator",
+                title: "创建人",
                 name: "Creator",
                 targets: 36,
                 orderable: true,
@@ -370,7 +374,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "CreateTime",
+                title: "创建时间",
                 name: "CreateTime",
                 targets: 37,
                 orderable: true,
@@ -378,7 +382,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Auditor",
+                title: "审核人",
                 name: "Auditor",
                 targets: 38,
                 orderable: true,
@@ -386,7 +390,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "AuditTime",
+                title: "审核时间",
                 name: "AuditTime",
                 targets: 39,
                 orderable: true,
@@ -394,7 +398,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "Canceler",
+                title: "注销人",
                 name: "Canceler",
                 targets: 40,
                 orderable: true,
@@ -402,7 +406,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "CancelTime",
+                title: "注销时间",
                 name: "CancelTime",
                 targets: 41,
                 orderable: true,
@@ -410,7 +414,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "LogoIcon",
+                title: "公司Icon",
                 name: "LogoIcon",
                 targets: 42,
                 orderable: true,
@@ -418,7 +422,7 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, {
-                title: "LogoUrl",
+                title: "公司logo",
                 name: "LogoUrl",
                 targets: 43,
                 orderable: true,
@@ -426,8 +430,10 @@
                 //    return '<span class="' + data + '"></span>'
                 //}
             }, ],
+
             columns: [{
-                data: "ID"
+                data: "ID",
+
             }, {
                 data: "Parent"
             }, {
@@ -534,5 +540,6 @@
             }, 'copy', /*'csv', */ 'excel', 'pdf', 'print']
 
         });
+
     }
 })(this)
