@@ -74,127 +74,135 @@
             },
             ajax: url,
             columnDefs: [{
-                title: "ID",
-                name: "ID",
-                targets: 0,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Corp",
-                name: "Corp",
-                targets: 1,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Name",
-                name: "Name",
-                targets: 2,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Type",
-                name: "Type",
-                targets: 3,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Reserve",
-                name: "Reserve",
-                targets: 4,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Remark",
-                name: "Remark",
-                targets: 5,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Creator",
-                name: "Creator",
-                targets: 6,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "CreateTime",
-                name: "CreateTime",
-                targets: 7,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Auditor",
-                name: "Auditor",
-                targets: 8,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "AuditTime",
-                name: "AuditTime",
-                targets: 9,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Canceler",
-                name: "Canceler",
-                targets: 10,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "CancelTime",
-                name: "CancelTime",
-                targets: 11,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, ],
+                    title: "ID",
+                    name: "ID",
+                    targets: 0,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }, {
+                    title: "所属公司",
+                    name: "Corp",
+                    targets: 1,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }, {
+                    title: "组名称",
+                    name: "Name",
+                    targets: 2,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }, {
+                    title: "是否系统管理组",
+                    name: "Type",
+                    targets: 3,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                //  {
+                //     title: "保留",
+                //     name: "Reserve",
+                //     targets: 4,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                {
+                    title: "备注",
+                    name: "Remark",
+                    targets: 4,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }
+                // , {
+                //     title: "创建人",
+                //     name: "Creator",
+                //     targets: 6,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "创建时间",
+                //     name: "CreateTime",
+                //     targets: 7,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "审核人",
+                //     name: "Auditor",
+                //     targets: 8,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "审核时间",
+                //     name: "AuditTime",
+                //     targets: 9,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "注销人",
+                //     name: "Canceler",
+                //     targets: 10,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "注销时间",
+                //     name: "CancelTime",
+                //     targets: 11,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, 
+            ],
             columns: [{
-                data: "ID"
-            }, {
-                data: "Corp"
-            }, {
-                data: "Name"
-            }, {
-                data: "Type"
-            }, {
-                data: "Reserve"
-            }, {
-                data: "Remark"
-            }, {
-                data: "Creator"
-            }, {
-                data: "CreateTime"
-            }, {
-                data: "Auditor"
-            }, {
-                data: "AuditTime"
-            }, {
-                data: "Canceler"
-            }, {
-                data: "CancelTime"
-            }, ],
+                    data: "ID"
+                }, {
+                    data: "Corp"
+                }, {
+                    data: "Name"
+                }, {
+                    data: "Type"
+                },
+                //  {
+                //     data: "Reserve"
+                // },
+                {
+                    data: "Remark"
+                },
+                // {
+                //     data: "Creator"
+                // }, {
+                //     data: "CreateTime"
+                // }, {
+                //     data: "Auditor"
+                // }, {
+                //     data: "AuditTime"
+                // }, {
+                //     data: "Canceler"
+                // }, {
+                //     data: "CancelTime"
+                // }, 
+            ],
             select: true,
             buttons: [{
                 text: '新增',

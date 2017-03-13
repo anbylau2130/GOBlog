@@ -76,451 +76,497 @@
             ajax: url,
 
             columnDefs: [{
-                title: "ID",
-                name: "ID",
-                targets: 0,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "父公司",
-                name: "Parent",
-                targets: 1,
-                orderable: true,
-                "width": "200px",
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "公司优先级(0-9)",
-                name: "Priority",
-                targets: 2,
-                "width": "20%",
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "公司名称",
-                name: "Name",
-                targets: 3,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "公司简称",
-                name: "BriefName",
-                targets: 4,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "证书名称",
-                name: "Certificate",
-                targets: 5,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "证书号码",
-                name: "CertificateNumber",
-                targets: 6,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "法人代表",
-                name: "Ceo",
-                targets: 7,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "邮编",
-                name: "Postcode",
-                targets: 8,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "传真号",
-                name: "Faxcode",
-                targets: 9,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "联系人",
-                name: "Linkman",
-                targets: 10,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "联系手机",
-                name: "Mobile",
-                targets: 11,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Email",
-                name: "Email",
-                targets: 12,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "联系QQ",
-                name: "Qq",
-                targets: 13,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "微信",
-                name: "Wechat",
-                targets: 14,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "微博",
-                name: "Weibo",
-                targets: 15,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "虚拟积分",
-                name: "VirtualIntegral",
-                targets: 16,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "真实积分",
-                name: "RealIntegral",
-                targets: 17,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "付费类型",
-                name: "FeeType",
-                targets: 18,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "预付阀值",
-                name: "PrepayValve",
-                targets: 19,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "余额",
-                name: "Balance",
-                targets: 20,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "冻结余额",
-                name: "FrozenBalance",
-                targets: 21,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "在途余额",
-                name: "IncomingBalance",
-                targets: 22,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "佣金比例",
-                name: "Commission",
-                targets: 23,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "折扣比例",
-                name: "Discount",
-                targets: 24,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "省份",
-                name: "Province",
-                targets: 25,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "地区",
-                name: "Area",
-                targets: 26,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "县",
-                name: "County",
-                targets: 27,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "社区",
-                name: "Community",
-                targets: 28,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "地址",
-                name: "Address",
-                targets: 29,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "状态",
-                name: "Status",
-                targets: 30,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "类型",
-                name: "Type",
-                targets: 31,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "级别",
-                name: "Grade",
-                targets: 32,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "行业类型",
-                name: "Vocation",
-                targets: 33,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Reserve",
-                name: "Reserve",
-                targets: 34,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "Remark",
-                name: "Remark",
-                targets: 35,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "创建人",
-                name: "Creator",
-                targets: 36,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "创建时间",
-                name: "CreateTime",
-                targets: 37,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "审核人",
-                name: "Auditor",
-                targets: 38,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "审核时间",
-                name: "AuditTime",
-                targets: 39,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "注销人",
-                name: "Canceler",
-                targets: 40,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "注销时间",
-                name: "CancelTime",
-                targets: 41,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "公司Icon",
-                name: "LogoIcon",
-                targets: 42,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, {
-                title: "公司logo",
-                name: "LogoUrl",
-                targets: 43,
-                orderable: true,
-                //"render": function(data, type, row) {
-                //    return '<span class="' + data + '"></span>'
-                //}
-            }, ],
+                    title: "ID",
+                    name: "ID",
+                    targets: 0,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }, {
+                    title: "上级公司",
+                    name: "Parent",
+                    targets: 1,
+                    orderable: true,
+                    "width": "200px",
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                // {
+                //     title: "公司优先级(0-9)",
+                //     name: "Priority",
+                //     targets: 2,
+                //     "width": "20%",
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                {
+                    title: "公司名称",
+                    name: "Name",
+                    targets: 2,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                }, {
+                    title: "公司简称",
+                    name: "BriefName",
+                    targets: 3,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                // {
+                //     title: "证书名称",
+                //     name: "Certificate",
+                //     targets: 5,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "证书号码",
+                //     name: "CertificateNumber",
+                //     targets: 6,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "法人代表",
+                //     name: "Ceo",
+                //     targets: 7,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "邮编",
+                //     name: "Postcode",
+                //     targets: 8,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, {
+                //     title: "传真号",
+                //     name: "Faxcode",
+                //     targets: 9,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // }, 
+                {
+                    title: "联系人",
+                    name: "Linkman",
+                    targets: 4,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                // {
+                //     title: "联系手机",
+                //     name: "Mobile",
+                //     targets: 11,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "Email",
+                //     name: "Email",
+                //     targets: 12,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "联系QQ",
+                //     name: "Qq",
+                //     targets: 13,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "微信",
+                //     name: "Wechat",
+                //     targets: 14,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "微博",
+                //     name: "Weibo",
+                //     targets: 15,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "虚拟积分",
+                //     name: "VirtualIntegral",
+                //     targets: 16,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "真实积分",
+                //     name: "RealIntegral",
+                //     targets: 17,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "付费类型",
+                //     name: "FeeType",
+                //     targets: 18,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "预付阀值",
+                //     name: "PrepayValve",
+                //     targets: 19,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "余额",
+                //     name: "Balance",
+                //     targets: 20,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "冻结余额",
+                //     name: "FrozenBalance",
+                //     targets: 21,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "在途余额",
+                //     name: "IncomingBalance",
+                //     targets: 22,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "佣金比例",
+                //     name: "Commission",
+                //     targets: 23,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "折扣比例",
+                //     name: "Discount",
+                //     targets: 24,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "省份",
+                //     name: "Province",
+                //     targets: 25,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "地区",
+                //     name: "Area",
+                //     targets: 26,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "县",
+                //     name: "County",
+                //     targets: 27,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "社区",
+                //     name: "Community",
+                //     targets: 28,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "地址",
+                //     name: "Address",
+                //     targets: 29,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "状态",
+                //     name: "Status",
+                //     targets: 30,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "类型",
+                //     name: "Type",
+                //     targets: 31,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "级别",
+                //     name: "Grade",
+                //     targets: 32,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "行业类型",
+                //     name: "Vocation",
+                //     targets: 33,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "Reserve",
+                //     name: "Reserve",
+                //     targets: 34,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "Remark",
+                //     name: "Remark",
+                //     targets: 35,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                {
+                    title: "创建人",
+                    name: "Creator",
+                    targets: 5,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                {
+                    title: "创建时间",
+                    name: "CreateTime",
+                    targets: 6,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                {
+                    title: "审核人",
+                    name: "Auditor",
+                    targets: 7,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                {
+                    title: "审核时间",
+                    name: "AuditTime",
+                    targets: 8,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                {
+                    title: "注销人",
+                    name: "Canceler",
+                    targets: 9,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                {
+                    title: "注销时间",
+                    name: "CancelTime",
+                    targets: 10,
+                    orderable: true,
+                    //"render": function(data, type, row) {
+                    //    return '<span class="' + data + '"></span>'
+                    //}
+                },
+                // {
+                //     title: "公司Icon",
+                //     name: "LogoIcon",
+                //     targets: 42,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+                // {
+                //     title: "公司logo",
+                //     name: "LogoUrl",
+                //     targets: 43,
+                //     orderable: true,
+                //     //"render": function(data, type, row) {
+                //     //    return '<span class="' + data + '"></span>'
+                //     //}
+                // },
+            ],
 
             columns: [{
-                data: "ID",
+                    data: "ID",
 
-            }, {
-                data: "Parent"
-            }, {
-                data: "Priority"
-            }, {
-                data: "Name"
-            }, {
-                data: "BriefName"
-            }, {
-                data: "Certificate"
-            }, {
-                data: "CertificateNumber"
-            }, {
-                data: "Ceo"
-            }, {
-                data: "Postcode"
-            }, {
-                data: "Faxcode"
-            }, {
-                data: "Linkman"
-            }, {
-                data: "Mobile"
-            }, {
-                data: "Email"
-            }, {
-                data: "Qq"
-            }, {
-                data: "Wechat"
-            }, {
-                data: "Weibo"
-            }, {
-                data: "VirtualIntegral"
-            }, {
-                data: "RealIntegral"
-            }, {
-                data: "FeeType"
-            }, {
-                data: "PrepayValve"
-            }, {
-                data: "Balance"
-            }, {
-                data: "FrozenBalance"
-            }, {
-                data: "IncomingBalance"
-            }, {
-                data: "Commission"
-            }, {
-                data: "Discount"
-            }, {
-                data: "Province"
-            }, {
-                data: "Area"
-            }, {
-                data: "County"
-            }, {
-                data: "Community"
-            }, {
-                data: "Address"
-            }, {
-                data: "Status"
-            }, {
-                data: "Type"
-            }, {
-                data: "Grade"
-            }, {
-                data: "Vocation"
-            }, {
-                data: "Reserve"
-            }, {
-                data: "Remark"
-            }, {
-                data: "Creator"
-            }, {
-                data: "CreateTime"
-            }, {
-                data: "Auditor"
-            }, {
-                data: "AuditTime"
-            }, {
-                data: "Canceler"
-            }, {
-                data: "CancelTime"
-            }, {
-                data: "LogoIcon"
-            }, {
-                data: "LogoUrl"
-            }, ],
+                }, {
+                    data: "Parent"
+                }, 
+                // {
+                //     data: "Priority"
+                // },
+                 {
+                    data: "Name"
+                }, {
+                    data: "BriefName"
+                },
+                // {
+                //     data: "Certificate"
+                // }, {
+                //     data: "CertificateNumber"
+                // }, {
+                //     data: "Ceo"
+                // }, {
+                //     data: "Postcode"
+                // }, {
+                //     data: "Faxcode"
+                // }, 
+                {
+                    data: "Linkman"
+                },
+                //  {
+                //     data: "Mobile"
+                // }, {
+                //     data: "Email"
+                // }, {
+                //     data: "Qq"
+                // }, {
+                //     data: "Wechat"
+                // }, {
+                //     data: "Weibo"
+                // }, {
+                //     data: "VirtualIntegral"
+                // }, {
+                //     data: "RealIntegral"
+                // }, {
+                //     data: "FeeType"
+                // }, {
+                //     data: "PrepayValve"
+                // }, {
+                //     data: "Balance"
+                // }, {
+                //     data: "FrozenBalance"
+                // }, {
+                //     data: "IncomingBalance"
+                // }, {
+                //     data: "Commission"
+                // }, {
+                //     data: "Discount"
+                // }, {
+                //     data: "Province"
+                // }, {
+                //     data: "Area"
+                // }, {
+                //     data: "County"
+                // }, {
+                //     data: "Community"
+                // }, {
+                //     data: "Address"
+                // }, {
+                //     data: "Status"
+                // }, {
+                //     data: "Type"
+                // }, {
+                //     data: "Grade"
+                // }, {
+                //     data: "Vocation"
+                // }, {
+                //     data: "Reserve"
+                // }, {
+                //     data: "Remark"
+                // }, 
+                {
+                    data: "Creator"
+                }, {
+                    data: "CreateTime"
+                }, {
+                    data: "Auditor"
+                }, {
+                    data: "AuditTime"
+                }, {
+                    data: "Canceler"
+                }, {
+                    data: "CancelTime"
+                },
+                // {
+                //     data: "LogoIcon"
+                // }, {
+                //     data: "LogoUrl"
+                // },
+            ],
             select: true,
             buttons: [{
                 text: '新增',
